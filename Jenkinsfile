@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // Get the ID of the sbb:latest image
-                    def oldImageId = sh(script: "docker images FE_wqproject:latest -q", returnStdout: true).trim()
+                    def oldImageId = sh(script: "docker images fe_wqproject:latest -q", returnStdout: true).trim()
                     env.oldImageId = oldImageId
                 }
 
@@ -54,7 +54,7 @@ pipeline {
         }  
         stage('Docker Build') {  
             steps {  
-                sh 'docker build -t shop-react-demo:${timestamp} .'
+                sh 'docker build -t fe_wqproject:${timestamp} .'
             }  
         }
 
@@ -62,47 +62,47 @@ pipeline {
             steps {
                 script {
                     // Check if the container is already running
-                    def isRunning = sh(script: "docker ps -q -f name=FE_wqproject", returnStdout: true).trim()
+                    def isRunning = sh(script: "docker ps -q -f name=fe_wqproject", returnStdout: true).trim()
 
                     if (isRunning) {
-                        sh "docker rm -f FE_wqproject"
+                        sh "docker rm -f fe_wqproject"
                     }
 
                     // Run the new container
                     try {
                         sh """
                         docker run \
-                          --name=FE_wqproject \
+                          --name=fe_wqproject \
                           -p 82:80 \
                           -v /docker_projects/wqproejct-fe/volumes/gen:/gen \
                           --restart unless-stopped \
                           --network application \
                           -e TZ=Asia/Seoul \
                           -d \
-                          FE_wqproject:${timestamp}
+                          fe_wqproject:${timestamp}
                         """
                     } catch (Exception e) {
                         // If the container failed to run, remove it and the image
-                        isRunning = sh(script: "docker ps -q -f name=FE_wqproject", returnStdout: true).trim()
+                        isRunning = sh(script: "docker ps -q -f name=fe_wqproject", returnStdout: true).trim()
 
                         if (isRunning) {
-                            sh "docker rm -f FE_wqproject"
+                            sh "docker rm -f fe_wqproject"
                         }
 
-                        def imageExists = sh(script: "docker images -q FE_wqproject:${timestamp}", returnStdout: true).trim()
+                        def imageExists = sh(script: "docker images -q fe_wqproject:${timestamp}", returnStdout: true).trim()
 
                         if (imageExists) {
-                            sh "docker rmi FE_wqproject:${timestamp}"
+                            sh "docker rmi fe_wqproject:${timestamp}"
                         }
 
                         error("Failed to run the Docker container.")
                     }
 
                     // If there's an existing 'latest' image, remove it
-                    def latestExists = sh(script: "docker images -q FE_wqproject:latest", returnStdout: true).trim()
+                    def latestExists = sh(script: "docker images -q fe_wqproject:latest", returnStdout: true).trim()
 
                     if (latestExists) {
-                        sh "docker rmi FE_wqproject:latest"
+                        sh "docker rmi fe_wqproject:latest"
 
                         if(!oldImageId.isEmpty()) {
                             sh "docker rmi ${oldImageId}"
@@ -110,7 +110,7 @@ pipeline {
                     }
 
                     // Tag the new image as 'latest'
-                    sh "docker tag FE_wqproject:${env.timestamp} FE_wqproject:latest"
+                    sh "docker tag fe_wqproject:${env.timestamp} fe_wqproject:latest"
                 }
             }
         }
