@@ -16,7 +16,7 @@ pipeline {
                 }
 
                 git branch: 'main',
-                    url: 'https://github.com/sodanhyun/wqproejct-fe'
+                    url: 'https://github.com/sodanhyun/wqproject-fe'
             }
 
             post {
