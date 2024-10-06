@@ -19,12 +19,12 @@ const LectureQR = () => {
 
   useEffect(() => {
     async function fetchActiveState() {
-      try {
-        const response = await fetcher.get(QRACTIVE_API);
-        setIsActive(response.data.active);
-      } catch (error) {
-        console.error("서버 요청 오류:", error);
-      }
+      await fetcher.get(QRACTIVE_API)
+      .then((res) => {
+        setIsActive(res.data.active);
+      }).catch((err) => {
+        console.error("서버 요청 오류:", err);
+      });
     }
     fetchActiveState();
   }, []);
@@ -32,26 +32,26 @@ const LectureQR = () => {
   useEffect(() => {
     async function fetchData() {
       if (!lCode) return;
-      try {
-        const response = await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`);
-        setLectureDetails(response.data);
-        setIsActive(response.data.active);
-      } catch (error) {
-        console.error("서버 요청 오류:", error);
-      }
+      await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`)
+      .then((res) => {
+        setLectureDetails(res.data);
+        setIsActive(res.data.active);
+      }).catch((err) => {
+        console.error("서버 요청 오류:", err);
+      });
     }
     fetchData();
   }, [lCode]);
 
   const handleToggle = async (newActiveState) => {
-    try {
-      await fetcher.patch(QRACTIVE_API, {
-        active: newActiveState,
-        lCode: lCode});
+    await fetcher.patch(QRACTIVE_API, {
+      active: newActiveState,
+      lCode: lCode
+    }).then((res) => {
       setIsActive(newActiveState);
-    } catch (error) {
-      console.error("서버 요청 오류:", error);
-    }
+    }).catch((err) => {
+      console.error("서버 요청 오류:", err);
+    });
   };
 
   const getFormattedDate = useCallback((dateString) => {
@@ -112,7 +112,7 @@ const LectureQR = () => {
                       /> : <img
                         src={VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}`}
                         className="mb-4 w-[400px]"
-                        onError={setNoImage(true)}
+                        onError={() => {setNoImage(true)}}
                       />}
                     </div>
                   <div className="ml-16 max-w-5xl">

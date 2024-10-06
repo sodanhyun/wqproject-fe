@@ -11,6 +11,8 @@ import { Button } from "../../components/common/Button";
 import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";
 import WqLogo from "../../assets/wq2.png"
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER_ID, USER_ROLE } from "../../constants/localstorage_constants";
+import { ADMIN } from "../../constants/user_role";
 
 export default function Login() {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
@@ -30,7 +32,7 @@ export default function Login() {
     event.preventDefault();
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
-      if(res.data.role.type != "ROLE_ADMIN") {
+      if(res.data.role.type != ADMIN) {
         toast.warning("관리자 승인 대기중인 계정입니다.", {
           autoClose: 800,
           hideProgressBar: false,
@@ -48,10 +50,10 @@ export default function Login() {
         });
       }
       if (res.data.tokenDto.accessToken !== undefined) {
-        localStorage.setItem("access_token", res.data.tokenDto.accessToken);
-        localStorage.setItem("refresh_token", res.data.tokenDto.refreshToken);
-        localStorage.setItem("user_role", res.data.role.type);
-        localStorage.setItem("myId", res.data.memberId);
+        localStorage.setItem(ACCESS_TOKEN, res.data.tokenDto.accessToken);
+        localStorage.setItem(REFRESH_TOKEN, res.data.tokenDto.refreshToken);
+        localStorage.setItem(USER_ROLE, res.data.role.type);
+        localStorage.setItem(USER_ID, res.data.memberId);
       } else {
         alert(res.status);
       }

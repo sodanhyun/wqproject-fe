@@ -18,11 +18,9 @@ const ITEMS_PER_PAGE = 6;
 
 const LectureList = () => {
   const { setShowDetailForm } = useStore((state) => state);
-  const [searchData, setSearchData] = useState({
-    keyword: "",
-    sdate: null,
-    edate: null,
-  })
+  const [keyword, setKeyword] = useState("");
+  const [sdate, setSdate] = useState(null); //시작일
+  const [edate, setEdate] = useState(null); //종료일
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -32,22 +30,18 @@ const LectureList = () => {
 
   useEffect(() => {
     fetchLectureData();
-  }, [searchData]);
-
-  const onChangeHandler = (value, name) => {
-    setSearchData({ ...searchData, [name]: value});
-  };
+  }, [sdate, edate, keyword]);
 
   const fetchLectureData = async () => {
-    const sdate = searchData.sdate ? searchData.sdate.toISOString().slice(0, -8) : null;
-    const edate = searchData.edate ? searchData.edate.toISOString().slice(0, -8) : null;
-    try {
-      fetcher.post(FILTER_LECTURE_LIST_API, searchData).then((res) => {
-        setLectureData(res.data);
-      });
-    } catch (error) {
-      console.error("강의 데이터 가져오기 오류:", error);
-    }
+    await fetcher.post(FILTER_LECTURE_LIST_API, {
+      keyword: keyword,
+      sdate: sdate ? sdate.toISOString().slice(0, -8) : null,
+      edate: edate ? edate.toISOString().slice(0, -8) : null,
+    }).then((res) => {
+      setLectureData(res.data);
+    }).catch((err) => {
+      console.error("강의 데이터 가져오기 오류:", err);
+    });
   };
 
   const handleDatePickerIconClick = () => {
@@ -123,8 +117,8 @@ const LectureList = () => {
                       aria-hidden="true"
                     />
                     <input
-                      value={searchData.keyword}
-                      onChange={(e)=>onChangeHandler(e.target.value, "keyword")}
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
                       id="search-field"
                       className="block h-full w-full border-0 bg-transparent py-0 pl-8 pr-0 text-gray-900 focus:ring-0 sm:text-sm"
                       placeholder="강의 검색"
@@ -140,14 +134,14 @@ const LectureList = () => {
                 {showDatePicker && (
                   <div className="flex items-center flex-wrap">
                     <DatePicker
-                      selected={searchData.sdate}
+                       selected={sdate}
                       onChange={(dates) => {
                         const [start, end] = dates;
-                        onChangeHandler(start, "sdate");
-                        onChangeHandler(end, "edate");
+                        setSdate(start);
+                        setEdate(end);
                       }}
-                      startDate={searchData.sdate}
-                      endDate={searchData.edate}
+                      startDate={sdate}
+                      endDate={edate}
                       selectsRange
                       inline
                     />

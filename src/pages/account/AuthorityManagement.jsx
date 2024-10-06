@@ -41,9 +41,10 @@ export default function AuthorityManagement() {
 
   const handleSaveClick = async (memberId, selectedRoleForEditMember) => {
     try {
-      const formData = new FormData();
-      formData.append("memberRole", selectedRoleForEditMember);
-      await fetcher.patch(`${ROLE_UPDATE_API}/${memberId}`, formData);
+      await fetcher.patch(ROLE_UPDATE_API, {
+        memberId: memberId,
+        memberRole: selectedRoleForEditMember
+      });
       await fetcher.get(ROLE_API).then((res) => {
         setMembers(Object.assign([], res.data.members));
         setAuthorities(res.data.authorities);

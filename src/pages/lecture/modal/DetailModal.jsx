@@ -7,9 +7,7 @@ import useStore from "../../../store.js";
 const DetailModal = ({lCode, fetchLectureData, onClose}) => {
   const {isShowDetailForm} = useStore(state => state);
   const [open, setOpen] = useState(true)
-
   const cancelButtonRef = useRef(null)
-  
 
   return (
       <Transition.Root show={open} as={Fragment}>

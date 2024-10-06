@@ -8,7 +8,6 @@ import useStore from "../../../store.js";
 
 const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
-  const imageURL = VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}`;
   const { setShowDetailForm } = useStore((state) => state);
   const imgRef = useRef();
   const [reqData, setReqData] = useState({
@@ -21,17 +20,17 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     limitMin: 0,
   });
   const [noImage, setNoImage] = useState(false);
-  const [imgPreview, setImgPreview] = useState("");
+  const [imgPreview, setImgPreview] = useState(null);
   const [imgFile, setImgFile] = useState("");
 
   useEffect(() => {
-    const fetchLectureInfo = () => {
-      fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
+    const fetchLectureInfo = async () => {
+      await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
         setReqData(res.data);
       });
     };
     fetchLectureInfo();
-  }, [fetchLectureData]);
+  }, []);
   
   const onChangeHandler = (e) => {
     const {value, name} = e.target;
@@ -73,6 +72,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     reader.onload = () => {
       setImgFile(file);
       setImgPreview(reader.result);
+      setNoImage(true);
     };
   };
 
@@ -239,10 +239,13 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                   />
                 </label>
                 <div className="mt-2 w-full">
-                  {!noImage && <img
-                    src={imageURL ? imgPreview || imageURL : imgPreview || null}
+                  {!noImage ? <img
+                    src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}${lCode}`}
                     alt="강의 관련 이미지"
-                    onError={setNoImage(true)}
+                    onError={() => {setNoImage(true)}}
+                  /> : imgPreview && <img
+                    src={imgPreview}
+                    alt="강의 관련 이미지"
                   />}
                 </div>
               </div>

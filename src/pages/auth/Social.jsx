@@ -6,6 +6,7 @@ import WqLogo from "../../assets/wq2.png"
 import {useEffect} from "react";
 import axios from "axios";
 import {TEMP_TOKEN_API} from "../../constants/api_constants.js";
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER_ID, USER_ROLE } from '../../constants/localstorage_constants';
 
 const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
 const { VITE_REACT_APP_REDIRECT_URL } = import.meta.env;
@@ -21,18 +22,17 @@ export default function Social() {
   }, []);
 
   const handleQuestionRegistration = async () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user_role");
-    localStorage.removeItem("memberId");
-    localStorage.removeItem("myId");
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+    localStorage.removeItem(USER_ROLE);
+    localStorage.removeItem(USER_ID);
 
     await axios.get(VITE_REACT_APP_API_BASE_URL + TEMP_TOKEN_API)
     .then((res) => {
-      localStorage.setItem("access_token", res.data.tokenDto.accessToken);
-      localStorage.setItem("refresh_token",res.data.tokenDto.refreshToken);
-      localStorage.setItem("user_role", res.data.role);
-      localStorage.setItem("memberId", res.data.memberId);
+      localStorage.setItem(ACCESS_TOKEN, res.data.tokenDto.accessToken);
+      localStorage.setItem(REFRESH_TOKEN,res.data.tokenDto.refreshToken);
+      localStorage.setItem(USER_ROLE, res.data.role);
+      localStorage.setItem(USER_ID, res.data.memberId);
     }).catch((err) => {
       console.log(err);
     })
