@@ -5,6 +5,8 @@ export const LECTURE_LIST_API ="/lecture/list" // 완료되지않은 강의 목�
 export const LECTURE_HANDLE_API ="/lecture" // (+lCode) 강의 상세정보, 수정, 삭제
 export const LECTURE_IMAGE_API = "/image/lecture" // (+lCode) 이미지 불러오기
 export const QRACTIVE_API = "/lecture/active" // 강의 활성화,비활성화
+export const QUESTION_LIMIT_API = "/lecture/limit" // (+lCode) 질문 제한 시간, 강의 제목
+
 
 // 질문 관련
 export const QUESTION_LIST_API = "/question/list" // (+lCode) 사용자 질문 리스트
@@ -12,7 +14,6 @@ export const PICKED_QUESTION_LIST_API = "/question/picked" // (+lCode) 관리자
 export const TEMP_TOKEN_API = "/auth/tempToken" // 소셜로그인 없이 질문등록
 export const ANSWER_LIST_API = "/answer/list" // (+qCode) 답변 리스트
 export const QUESTION_ACTIVE_API = "/question/active" //(+lCode) 질문등록 버튼용
-export const QUESTION_LIMIT_API = "/common/question/limit" // (+lCode) 질문 제한 시간, 강의 제목
 
 // 웹소켓 - 구독
 export const QUESTION_SUBSCRIBE = "/qSub/question"  // (+lCode) 질문 구독 - 사용자

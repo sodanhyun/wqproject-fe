@@ -15,22 +15,20 @@ import {
   AUTH_MANAGEMENT_COMPONENT,
   MAIN_COMPONENT
 } from "./constants/component_constants.js";
-import LectureReg from "./pages/LectureReg.jsx";
-import LectureList from "./pages/LectureList.jsx";
+import LectureReg from "./pages/lecture/LectureReg.jsx";
+import LectureList from "./pages/lecture/LectureList.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Login from "./app/(auth)/login/page";
-import Register from "./app/(auth)/register/page";
-import LectureQR from "./pages/LectureQR";
-// 소셜로그인
-import LoginHandeler from "./components/LoginHandeler";
-import Social from "./app/(auth)/login/socialpage";
-import Test from "./testComponent/test";
-import {QuestionCollection} from "./pages/AnswerQuestions/QuestionCollection.jsx";
-import LiveQuestions from "./pages/LiveQuestions/LiveQuestions.jsx";
-import NotFound from "./app/not-found";
-import NonLoginQuestion from "./pages/NonLoginQuestion";
-import AuthorityManagement from "./pages/AuthorityManagement";
+import Login from "./pages/auth/Login";
+import Regist from "./pages/account/Regist";
+import LectureQR from "./pages/lecture/LectureQR";
+import LoginHandeler from "./pages/auth/component/LoginHandeler";
+import Social from "./pages/auth/Social";
+import {QuestionCollection} from "./pages/answer/QuestionCollection.jsx";
+import LiveQuestions from "./pages/question/LiveQuestions.jsx";
+import NotFound from "./pages/NotFound";
+import NonLoginQuestion from "./pages/question/NonLoginQuestion";
+import AuthorityManagement from "./pages/account/AuthorityManagement";
 import Main  from "./pages/Main";
 
 function App() {
@@ -52,29 +50,15 @@ function App() {
         <Route path={REGISTRATION_COMPONENT} element={<LectureReg />} />
         <Route path={LECTURE_LIST_COMPONENT} element={<LectureList />} />
         <Route path={LOGIN_COMPONENT} element={<Login />} />
-        <Route path={SIGNUP_COMPONENT} element={<Register />} />
+        <Route path={SIGNUP_COMPONENT} element={<Regist />} />
         <Route path={LIVE_QUESTIONS_COMPONENT} element={<LiveQuestions />} />
-
-        {/* 소셜로그인*/}
         <Route path={REDIRECT_COMPONENT} element={<LoginHandeler />} />
         <Route path={SIGNUP_SOCIAL} element={<Social />} />
-        <Route path="/test" element={<Test />} />
-        {/* 테스트페이지 -> 실시간질문 페이지연동 예정 */}
-        <Route
-          path={PICK_QUESTIONS_COMPONENT} element={<QuestionCollection />}
-        />
+        <Route path={PICK_QUESTIONS_COMPONENT} element={<QuestionCollection />}/>
         <Route path={QR_CODE_COMPONENT} element={<LectureQR />} />
-        <Route
-          path={NON_LOGIN_QUESTION_COMPONENT} element={<NonLoginQuestion />}
-        />
-        <Route
-          path={AUTH_MANAGEMENT_COMPONENT} element={<AuthorityManagement />}
-        />
-        <Route
-          path={MAIN_COMPONENT} element={<Main/>}
-        />
-
-        {/* 접근권한이 없는경우 뜨는 페이지 */}
+        <Route path={NON_LOGIN_QUESTION_COMPONENT} element={<NonLoginQuestion />}/>
+        <Route path={AUTH_MANAGEMENT_COMPONENT} element={<AuthorityManagement />}/>
+        <Route path={MAIN_COMPONENT} element={<Main/>}/>
         <Route path={ERROR_COMPONENT} element={<NotFound />} />
       </Routes>
     </>
