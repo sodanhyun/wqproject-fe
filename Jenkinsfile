@@ -82,7 +82,7 @@ pipeline {
                           -p 82:80 \
                           -v /docker_projects/wqproejct-fe/volumes/gen:/gen \
                           --restart unless-stopped \
-                          --network application \
+                          --network=application \
                           -e TZ=Asia/Seoul \
                           -d \
                           fe_wqproject:${timestamp}
