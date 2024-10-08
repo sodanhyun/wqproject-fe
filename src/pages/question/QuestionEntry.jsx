@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Link} from "react-router-dom";
 import { SlimLayout } from "../../components/common/SlimLayout";
-import WqLogo from "../../assets/logo/wq2.png"
+import WqLogo from "/assets/logo/wq2.png"
 import SocialLoginLink from '../auth/component/SocialLoginLink';
 
 export default function QuestionEntry() {

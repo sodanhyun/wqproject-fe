@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./Button.jsx";
 import { Container } from "./Container.jsx";
-import NEWLOGO from '../../assets/logo/wq2.png'
+import NEWLOGO from '/assets/logo/wq2.png'
 import {
   LECTURE_LIST_COMPONENT,
   LOGIN_COMPONENT,
@@ -13,9 +13,7 @@ import {
   AUTH_MANAGEMENT_COMPONENT,
 } from "../../constants/component_constants.js";
 import { ADMIN } from "../../constants/user_role.js";
-import { USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
-import fetcher from "../../fetcher.js";
-import { LOGOUT_API } from "../../constants/api_constants.js";
+import { USER_ROLE } from "../../constants/localstorage_constants.js";
 import LogoutLink from "../../pages/auth/component/LogoutLink.jsx";
 
 const LinkData = [

@@ -13,7 +13,7 @@ import { FILTER_LECTURE_LIST_API } from "../../constants/api_constants.js";
 import DetailModal from "./modal/DetailModal.jsx";
 import useStore from "../../store.js";
 import Pagination from "../../components/common/Pagination";
-import Logo from "../../assets/logo/logo_gray.png"
+import Logo from "/assets/logo/logo_gray.png"
 const ITEMS_PER_PAGE = 6;
 
 const LectureList = () => {

@@ -1,7 +1,7 @@
 import { REDIRECT_COMPONENT } from "../../../constants/component_constants";
 import { TYPE_GOOGLE, TYPE_KAKAO, USER_TYPE } from "../../../constants/localstorage_constants";
-import kakao from "../../../assets/kakao/kakao_login_medium_wide.png";
-import googleSignIn from "../../../assets/google/web_neutral_sq_SI@4x.png";
+import kakao from "/assets/kakao/kakao_login_medium_wide.png";
+import googleSignIn from "/assets/google/web_neutral_sq_SI@4x.png";
 const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
 
 export default function SocialLoginLink() {
