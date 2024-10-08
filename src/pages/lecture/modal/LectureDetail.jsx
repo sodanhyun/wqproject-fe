@@ -55,7 +55,7 @@ const LectureDetail = ({ lCode, onClose }) => {
                 <p>첨부된 파일이 없습니다.</p>
               ) : (
                 <img 
-                src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}${lCode}`}
+                src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
                 alt="Lecture" 
                 onError={() => {setNoImage(true)}} />
               )}

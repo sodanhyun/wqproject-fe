@@ -240,7 +240,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                 </label>
                 <div className="mt-2 w-full">
                   {!noImage ? <img
-                    src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}${lCode}`}
+                    src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
                     alt="강의 관련 이미지"
                     onError={() => {setNoImage(true)}}
                   /> : imgPreview && <img
