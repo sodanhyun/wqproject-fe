@@ -21,15 +21,16 @@ import {
   UPDATE_QUESTION_SUBSCRIBE,
   QUESTION_ACTIVE_API,
   QUESTION_LIMIT_API,
+  LOGOUT_API,
 } from "../../constants/api_constants.js";
 import MyQuestionCard from "./component/MyQuestionCard.jsx";
 import PickedCard from "./component/PickedCard.jsx";
 import QuestionCard from "./component/QuestionCard.jsx";
 import {toast} from "react-toastify";
 import { ACCESS_TOKEN, USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
+import LogoutLink from "../auth/component/LogoutLink.jsx";
 
 const { VITE_REACT_APP_API_WS_URL } = import.meta.env;
-
 const LiveQuestions = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [lectureTitle, setLectureTitle] = useState(null);
@@ -277,6 +278,9 @@ const LiveQuestions = () => {
       className="bg-slate-50 py-20 sm:py-32 pb-96"
     >
       <Container>
+        <div className="flex justify-end">
+          <LogoutLink>로그아웃</LogoutLink>
+        </div>
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl mb-4">
             {lectureTitle}

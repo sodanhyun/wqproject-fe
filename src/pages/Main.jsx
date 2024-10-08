@@ -1,7 +1,4 @@
-// import Image from 'next/image'
 import { Header } from '../components/common/Header.jsx'
-
-// import { Button } from '../components/Button.jsx'
 import { Container } from '../components/common/Container.jsx'
 import Calendars from '../components/Calendars.jsx'
 

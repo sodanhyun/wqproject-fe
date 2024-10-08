@@ -1,7 +1,6 @@
 import {HeartIcon} from "@heroicons/react/20/solid/index.js";
 import {useState} from "react";
 import pinImg from "../../../assets/pin.png";
-import CheckPickModal from "../modal/CheckPickModal.jsx";
 import CancelPickModal from "../modal/CancelPickModal.jsx";
 
 const PickedCard = ({data, role, clickLike, clickPick}) => {

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { LOGIN_COMPONENT } from './constants/component_constants';
-import { toast } from 'react-toastify';
 
 const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
 
@@ -9,13 +8,6 @@ const fetcher = axios.create({
   withCredentials: true,
   headers: { "Content-Type": "multipart/form-data" },
 })
-
-// fetcher.interceptors.request.use(
-//   (error) => {
-//       console.error(error);
-//       return Promise.reject(error);
-//   }
-// )
 
 fetcher.interceptors.response.use(
   (response) => {

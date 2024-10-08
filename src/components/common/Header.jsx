@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./Button.jsx";
 import { Container } from "./Container.jsx";
-import NEWLOGO from '../../assets/wq2.png'
+import NEWLOGO from '../../assets/logo/wq2.png'
 import {
   LECTURE_LIST_COMPONENT,
   LOGIN_COMPONENT,
@@ -16,6 +16,7 @@ import { ADMIN } from "../../constants/user_role.js";
 import { USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
 import fetcher from "../../fetcher.js";
 import { LOGOUT_API } from "../../constants/api_constants.js";
+import LogoutLink from "../../pages/auth/component/LogoutLink.jsx";
 
 const LinkData = [
   { href: REGISTRATION_COMPONENT, menuName: "강의등록", adminOnly: true },
@@ -169,29 +170,3 @@ function NavLink({ href, children }) {
   );
 }
 
-function LogoutLink({ children }) {
-  const navigate = useNavigate();
-  const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
-
-  const handleLogout = async (event) => {
-    event.preventDefault();
-    await fetcher.delete(VITE_REACT_APP_API_BASE_URL + LOGOUT_API)
-    .then((res) => {
-      localStorage.removeItem(USER_ROLE);
-      localStorage.removeItem(USER_ID);
-    }).catch((err) => {
-      console.err(err);
-    })
-    navigate(LOGIN_COMPONENT);
-  };
-
-  return (
-    <a
-      href="#"
-      onClick={handleLogout}
-      className="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-    >
-      {children}
-    </a>
-  );
-}

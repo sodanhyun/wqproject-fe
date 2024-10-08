@@ -1,4 +1,4 @@
-import backgroundImage from '../../assets/background-auth.jpg'
+import backgroundImage from '../../assets/background/background-auth.jpg'
 
 export function SlimLayout({ children }) {
   return (

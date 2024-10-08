@@ -33,7 +33,13 @@ pipeline {
             steps {
                 dir('.') {
                     sh """
-                    npm install
+                    cp /.env .env
+                    """
+                }
+                
+                dir('.') {
+                    sh """
+                    npm ci
                     """
                 }
 

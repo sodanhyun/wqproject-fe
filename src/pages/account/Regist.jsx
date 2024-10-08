@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "../../components/common/Button";
 import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";
-import WqLogo from "../../assets/wq2.png"
+import WqLogo from "../../assets/logo/wq2.png"
 export const metadata = {
   title: "Sign Up",
 };

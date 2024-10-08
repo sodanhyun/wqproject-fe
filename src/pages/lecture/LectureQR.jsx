@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import QrCode from "qrcode.react";
 import fetcher from "../../fetcher";
-import backgroundImage from "../../assets/background-faqs.jpg";
+import backgroundImage from "../../assets/background/background-faqs.jpg";
 import baseImage from "../../assets/codehows.png";
 import { Header } from "../../components/common/Header.jsx";
 import LectureSelect from "./component/LectureSelect.jsx";
@@ -16,7 +16,7 @@ const LectureQR = () => {
   const [lCode, setLCode] = useState(null);
   const [lectureDetails, setLectureDetails] = useState(null);
   const [noImage, setNoImage] = useState(false);
-  
+
   useEffect(() => {
     async function fetchData() {
       if (!lCode) return;
