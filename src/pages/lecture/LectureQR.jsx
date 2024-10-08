@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import QrCode from "qrcode.react";
 import fetcher from "../../fetcher";
-import backgroundImage from "../../assets/background/background-faqs.jpg";
-import baseImage from "../../assets/codehows.png";
+import backgroundImage from "/assets/background/background-faqs.jpg";
+import baseImage from "/assets/codehows.png";
 import { Header } from "../../components/common/Header.jsx";
 import LectureSelect from "./component/LectureSelect.jsx";
 import { LECTURE_IMAGE_API } from "../../constants/api_constants";

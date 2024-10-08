@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { Button } from "../../components/common/Button";
 import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";
-import WqLogo from "../../assets/logo/wq2.png"
+import WqLogo from "/assets/logo/wq2.png"
 import { USER_ID, USER_ROLE, USER_TYPE } from "../../constants/localstorage_constants";
 import { ADMIN } from "../../constants/user_role";
 import SocialLoginLink from "./component/SocialLoginLink";
