@@ -138,7 +138,7 @@ export default function AuthorityManagement() {
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               <SelectPermission
                                 authorities={authorities}
-                                initialRole={member.role}
+                                initialRole={member.role.type}
                                 onChange={(value) =>
                                   setSelectedRoleForEditMember(value)
                                 }

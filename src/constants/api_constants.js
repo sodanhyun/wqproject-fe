@@ -11,7 +11,6 @@ export const QUESTION_LIMIT_API = "/lecture/limit" // (+lCode) 질문 제한 시
 // 질문 관련
 export const QUESTION_LIST_API = "/question/list" // (+lCode) 사용자 질문 리스트
 export const PICKED_QUESTION_LIST_API = "/question/picked" // (+lCode) 관리자 - 채택된 질문 리스트
-export const TEMP_TOKEN_API = "/auth/tempToken" // 소셜로그인 없이 질문등록
 export const ANSWER_LIST_API = "/answer/list" // (+qCode) 답변 리스트
 export const QUESTION_ACTIVE_API = "/question/active" //(+lCode) 질문등록 버튼용
 
@@ -35,11 +34,14 @@ export const ANSWER_PUBLISH = "/pub/answer" // (+qCode)답변 등록
 export const UPDATE_ANSWER_PUBLISH = "/pub/answer/update" // 답변 수정
 export const DELETE_ANSWER_PUBLISH = "/pub/answer/delete" // 답변 삭제
 
+// 인증 관련
+export const LOGIN_API ="/auth/login" // 관리자 로그인
+export const TOKEN_REFRESH_API ="/auth/refresh" // 토큰 리프레쉬
+export const TEMP_TOKEN_API = "/auth/tempToken" // 임시 토큰 발급
+
 // 계정 관련
-export const LOGIN_API ="/auth/signin" // 관리자 로그인
-export const SIGNUP_API ="/auth/signup" //관리자 회원가입
-export const TOKEN_REFRESH_API ="/auth/refresh" //토큰 리프레쉬
-export const ROLE_API = "/role/authorities" //권한 종류,멤버 정보
-export const ROLE_UPDATE_API = "/role/update" // 권한 수정
-export const ROLE_DELETE_API = "/role/delete" // (+memberId) 멤버 삭제
+export const SIGNUP_API ="/account/regist" //관리자 회원가입
+export const ROLE_API = "/account/authorities" //권한 종류,멤버 정보
+export const ROLE_UPDATE_API = "/account/update" // 권한 수정
+export const ROLE_DELETE_API = "/account/delete" // (+memberId) 멤버 삭제
 

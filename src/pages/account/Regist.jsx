@@ -4,7 +4,6 @@ import { SIGNUP_API } from "../../constants/api_constants";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
-
 import { Button } from "../../components/common/Button";
 import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";

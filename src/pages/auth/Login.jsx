@@ -32,7 +32,7 @@ export default function Login() {
     event.preventDefault();
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
-      if(res.data.role.type != ADMIN) {
+      if(res.data.userRole.type != ADMIN) {
         toast.warning("관리자 승인 대기중인 계정입니다.", {
           autoClose: 800,
           hideProgressBar: false,
@@ -49,17 +49,11 @@ export default function Login() {
           draggable: true,
         });
       }
-      if (res.data.tokenDto.accessToken !== undefined) {
-        localStorage.setItem(ACCESS_TOKEN, res.data.tokenDto.accessToken);
-        localStorage.setItem(REFRESH_TOKEN, res.data.tokenDto.refreshToken);
-        localStorage.setItem(USER_ROLE, res.data.role.type);
-        localStorage.setItem(USER_ID, res.data.memberId);
-      } else {
-        alert(res.status);
-      }
+      localStorage.setItem(ACCESS_TOKEN, res.data?.accessToken);
+      localStorage.setItem(USER_ROLE, res.data?.userRole.type);
+      localStorage.setItem(USER_ID, res.data?.userId);
       navigate(MAIN_COMPONENT);
     }).catch((err) => {
-      console.log(err);
       setError("아이디 또는 비밀번호가 잘못되었습니다.");
     });
   };
