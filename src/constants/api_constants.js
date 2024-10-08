@@ -3,7 +3,7 @@ export const REGISTER_LECTURE_API = "/lecture/regist"  // 강의등록
 export const FILTER_LECTURE_LIST_API ="/lecture/filteredList" // 전체 강의 목록 & 필터 조건 조회
 export const LECTURE_LIST_API ="/lecture/list" // 완료되지않은 강의 목록 (셀렉트박스용)
 export const LECTURE_HANDLE_API ="/lecture" // (+lCode) 강의 상세정보, 수정, 삭제
-export const LECTURE_IMAGE_API = "/lecture/image/" // (+lCode) 이미지 불러오기
+export const LECTURE_IMAGE_API = "/lecture/image" // (+lCode) 이미지 불러오기
 export const QRACTIVE_API = "/lecture/active" // 강의 활성화,비활성화
 export const QUESTION_LIMIT_API = "/lecture/limit" // (+lCode) 질문 제한 시간, 강의 제목
 
@@ -36,6 +36,7 @@ export const DELETE_ANSWER_PUBLISH = "/pub/answer/delete" // 답변 삭제
 
 // 인증 관련
 export const LOGIN_API ="/auth/login" // 관리자 로그인
+export const LOGOUT_API ="/auth/logout"
 export const TOKEN_REFRESH_API ="/auth/refresh" // 토큰 리프레쉬
 export const TEMP_TOKEN_API = "/auth/tempToken" // 임시 토큰 발급
 

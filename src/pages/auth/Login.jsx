@@ -11,7 +11,7 @@ import { Button } from "../../components/common/Button";
 import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";
 import WqLogo from "../../assets/wq2.png"
-import { ACCESS_TOKEN, REFRESH_TOKEN, USER_ID, USER_ROLE } from "../../constants/localstorage_constants";
+import { USER_ID, USER_ROLE } from "../../constants/localstorage_constants";
 import { ADMIN } from "../../constants/user_role";
 
 export default function Login() {
@@ -32,7 +32,7 @@ export default function Login() {
     event.preventDefault();
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
-      if(res.data.userRole.type != ADMIN) {
+      if(res.data.userRole.type !== ADMIN) {
         toast.warning("관리자 승인 대기중인 계정입니다.", {
           autoClose: 800,
           hideProgressBar: false,
@@ -40,7 +40,7 @@ export default function Login() {
           pauseOnHover: true,
           draggable: true,
         });
-      }else {
+      }else if(res.data.userRole.type === ADMIN) {
         toast.success("로그인에 성공했습니다!", {
           autoClose: 800,
           hideProgressBar: false,
@@ -48,12 +48,18 @@ export default function Login() {
           pauseOnHover: true,
           draggable: true,
         });
+        localStorage.setItem(USER_ROLE, res.data?.userRole.type);
+        localStorage.setItem(USER_ID, res.data?.userId);
+        navigate(MAIN_COMPONENT);
       }
-      localStorage.setItem(ACCESS_TOKEN, res.data?.accessToken);
-      localStorage.setItem(USER_ROLE, res.data?.userRole.type);
-      localStorage.setItem(USER_ID, res.data?.userId);
-      navigate(MAIN_COMPONENT);
     }).catch((err) => {
+      toast.error("아이디 또는 비밀번호가 잘못되었습니다.", {
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       setError("아이디 또는 비밀번호가 잘못되었습니다.");
     });
   };

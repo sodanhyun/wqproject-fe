@@ -22,14 +22,12 @@ export default function AuthorityManagement() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        await fetcher.get(ROLE_API).then((res) => {
-          setMembers(res.data.members);
-          setAuthorities(res.data.authorities);
-        });
-      } catch (error) {
-        console.error("Error:", error);
-      }
+      await fetcher.get(ROLE_API).then((res) => {
+        setMembers(res.data.members);
+        setAuthorities(res.data.authorities);
+      }).catch((err) => {
+      console.error("Error:", err);
+      });
     };
     fetchData();
   }, []);
@@ -168,13 +166,13 @@ export default function AuthorityManagement() {
                             </td>
 
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {member.role}
+                              {member.role.type}
                             </td>
                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                               <button
                                 className="text-blue-600 hover:text-blue-900"
                                 onClick={() =>
-                                  handleEditClick(member.id, member.role)
+                                  handleEditClick(member.id, member.role.type)
                                 } 
                               >
                                 수정

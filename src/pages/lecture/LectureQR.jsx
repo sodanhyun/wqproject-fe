@@ -16,19 +16,7 @@ const LectureQR = () => {
   const [lCode, setLCode] = useState(null);
   const [lectureDetails, setLectureDetails] = useState(null);
   const [noImage, setNoImage] = useState(false);
-
-  useEffect(() => {
-    async function fetchActiveState() {
-      await fetcher.get(QRACTIVE_API)
-      .then((res) => {
-        setIsActive(res.data.active);
-      }).catch((err) => {
-        console.error("서버 요청 오류:", err);
-      });
-    }
-    fetchActiveState();
-  }, []);
-
+  
   useEffect(() => {
     async function fetchData() {
       if (!lCode) return;

@@ -13,73 +13,88 @@ import {
   AUTH_MANAGEMENT_COMPONENT,
 } from "../../constants/component_constants.js";
 import { ADMIN } from "../../constants/user_role.js";
-import { ACCESS_TOKEN, REFRESH_TOKEN, USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
-
-function MobileNavLink({ href, children }) {
-  return (
-    <Popover>
-      <Popover.Button as="div" className="block w-full p-2">
-        <Link to={href}>{children}</Link>
-      </Popover.Button>
-    </Popover>
-  );
-}
-
-function MobileLogoutLink({ children }) {
-  const navigate = useNavigate();
-
-  const handleLogout = (event) => {
-    event.preventDefault();
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(REFRESH_TOKEN);
-    localStorage.removeItem(USER_ROLE);
-    localStorage.removeItem(USER_ID);
-    navigate(LOGIN_COMPONENT);
-  };
-
-  return (
-    <a href="#" onClick={handleLogout} className="block w-full p-2">
-      {children}
-    </a>
-  );
-}
-
-function MobileNavIcon({ open }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className="h-3.5 w-3.5 overflow-visible stroke-slate-700"
-      fill="none"
-      strokeWidth={2}
-      strokeLinecap="round"
-    >
-      <path
-        d="M0 1H14M0 7H14M0 13H14"
-        className={clsx(
-          "origin-center transition",
-          open && "scale-90 opacity-0"
-        )}
-      />
-      <path
-        d="M2 2L12 12M12 2L2 12"
-        className={clsx(
-          "origin-center transition",
-          !open && "scale-90 opacity-0"
-        )}
-      />
-    </svg>
-  );
-}
+import { USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
+import fetcher from "../../fetcher.js";
+import { LOGOUT_API } from "../../constants/api_constants.js";
 
 const LinkData = [
   { href: REGISTRATION_COMPONENT, menuName: "강의등록", adminOnly: true },
   { href: LECTURE_LIST_COMPONENT, menuName: "강의목록", adminOnly: true },
-  { href: QR_CODE_COMPONENT, menuName: "강의 활성화", adminOnly: true }
+  { href: QR_CODE_COMPONENT, menuName: "강의 QR", adminOnly: true }
 ];
 
-function MobileNavigation() {
-  const isLoggedIn = !!localStorage.getItem(ACCESS_TOKEN);
+export function Header() {
   const userRole = localStorage.getItem(USER_ROLE);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userRole = localStorage.getItem(USER_ROLE);
+    if (userRole !== ADMIN) {
+      navigate(LOGIN_COMPONENT);
+    }
+  });
+
+  return (
+    <header className="py-10">
+      <Container>
+        <nav className="relative z-100 flex justify-between">
+          <div className="flex items-center md:gap-x-12">
+            <LogoLink href="/" aria-label="Home">
+              <img src={NEWLOGO} className="w-40"></img>
+            </LogoLink>
+            <div className="hidden md:flex md:gap-x-6">
+              {LinkData.map((data, index) => (
+                <NavLink key={index} href={data.href}>
+                  {data.menuName}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-x-5 md:gap-x-8">
+            <div className="hidden md:block">
+              <LogoutLink>로그아웃</LogoutLink>
+            </div>
+            {userRole === ADMIN && (
+              <Link to={AUTH_MANAGEMENT_COMPONENT}>
+                <Button color="blue">
+                  <span>권한관리</span>
+                </Button>
+              </Link>
+            )}
+            <div className="-mr-1 md:hidden">
+              <MobileNavigation />
+            </div>
+          </div>
+        </nav>
+      </Container>
+    </header>
+  );
+}
+
+function MobileNavigation() {
+  const userRole = localStorage.getItem(USER_ROLE);
+
+  const MobileNavIcon = ({ open }) => {return (
+      <svg
+        aria-hidden="true"
+        className="h-3.5 w-3.5 overflow-visible stroke-slate-700"
+        fill="none"
+        strokeWidth={2}
+        strokeLinecap="round">
+        <path
+          d="M0 1H14M0 7H14M0 13H14"
+          className={clsx(
+            "origin-center transition",
+            open && "scale-90 opacity-0"
+          )}/>
+        <path
+          d="M2 2L12 12M12 2L2 12"
+          className={clsx(
+            "origin-center transition",
+            !open && "scale-90 opacity-0"
+          )}/>
+      </svg>
+      )}
 
   return (
     <Popover>
@@ -118,17 +133,13 @@ function MobileNavigation() {
               (data, index) =>
                 (!data.adminOnly ||
                   (data.adminOnly && userRole === ADMIN)) && (
-                  <MobileNavLink key={index} href={data.href}>
+                  <NavLink key={index} href={data.href}>
                     {data.menuName}
-                  </MobileNavLink>
+                  </NavLink>
                 )
             )}
             <hr className="m-2 border-slate-300/40" />
-            {isLoggedIn ? (
-              <MobileLogoutLink>로그아웃</MobileLogoutLink>
-            ) : (
-              <MobileNavLink href={LOGIN_COMPONENT}>로그인</MobileNavLink>
-            )}
+            <LogoutLink>로그아웃</LogoutLink>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -136,14 +147,41 @@ function MobileNavigation() {
   );
 }
 
+
+function LogoLink({ href, children }) {
+  return (
+    <Link
+      to={href}
+      className="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+    >
+      {children}
+    </Link>
+  )
+}
+
+function NavLink({ href, children }) {
+  return (
+    <Popover>
+      <Popover.Button as="div" className="block w-full p-2">
+        <Link to={href}>{children}</Link>
+      </Popover.Button>
+    </Popover>
+  );
+}
+
 function LogoutLink({ children }) {
   const navigate = useNavigate();
+  const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
 
-  const handleLogout = (event) => {
+  const handleLogout = async (event) => {
     event.preventDefault();
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(REFRESH_TOKEN);
-    localStorage.removeItem(USER_ROLE);
+    await fetcher.delete(VITE_REACT_APP_API_BASE_URL + LOGOUT_API)
+    .then((res) => {
+      localStorage.removeItem(USER_ROLE);
+      localStorage.removeItem(USER_ID);
+    }).catch((err) => {
+      console.err(err);
+    })
     navigate(LOGIN_COMPONENT);
   };
 
@@ -155,72 +193,5 @@ function LogoutLink({ children }) {
     >
       {children}
     </a>
-  );
-}
-
-function NavLink({ href, children }) {
-  return (
-    <Link
-      to={href}
-      className="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-    >
-      {children}
-    </Link>
-  )
-}
-
-
-export function Header() {
-  const isLoggedIn = !!localStorage.getItem(ACCESS_TOKEN);
-  const userRole = localStorage.getItem(USER_ROLE);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const userRole = localStorage.getItem(USER_ROLE);
-    if (userRole !== ADMIN) {
-      navigate(LOGIN_COMPONENT);
-    }
-  });
-
-  return (
-    <header className="py-10">
-      <Container>
-        <nav className="relative z-100 flex justify-between">
-          <div className="flex items-center md:gap-x-12">
-            <NavLink href="/" aria-label="Home">
-              {/* <Logo className="h-10 w-auto" /> */}
-              <img src={NEWLOGO} className="w-40"></img>
-            </NavLink>
-            <div className="hidden md:flex md:gap-x-6">
-              {LinkData.map((data, index) => (
-                <MobileNavLink key={index} href={data.href}>
-                  {data.menuName}
-                </MobileNavLink>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-x-5 md:gap-x-8">
-            <div className="hidden md:block">
-              {isLoggedIn ? (
-                <LogoutLink>로그아웃</LogoutLink>
-              ) : (
-                <NavLink href={LOGIN_COMPONENT}>로그인</NavLink>
-              )}
-            </div>
-            {userRole === ADMIN && (
-              <Link to={AUTH_MANAGEMENT_COMPONENT}>
-                <Button color="blue">
-                  <span>권한관리</span>
-                </Button>
-              </Link>
-            )}
-            <div className="-mr-1 md:hidden">
-              <MobileNavigation />
-            </div>
-          </div>
-        </nav>
-      </Container>
-    </header>
   );
 }
