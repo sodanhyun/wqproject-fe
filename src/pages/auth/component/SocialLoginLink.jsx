@@ -21,10 +21,10 @@ export default function SocialLoginLink() {
     return(
         <>
         <a onClick={() => {handleSocialLogin(TYPE_KAKAO);}} className="flex justify-center">
-          <img src={kakao} className="w-80 h-10 mt-2 cursor-pointer hover:brightness-75" />
+          <img src={kakao} className="w-70 mt-2 cursor-pointer hover:brightness-75" />
         </a>
         <a onClick={() => {handleSocialLogin(TYPE_GOOGLE);}} className="flex justify-center">
-            <img src={googleSignIn} className="w-80 h-11 mt-2 cursor-pointer hover:brightness-75"/>
+            <img src={googleSignIn} className="w-60 mt-2 cursor-pointer hover:brightness-75"/>
         </a>
         </>
     )
