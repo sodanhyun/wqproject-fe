@@ -9,7 +9,8 @@ export default function LogoutLink({ children }) {
     const { 
         VITE_REACT_APP_API_BASE_URL,
         VITE_REACT_APP_REST_API_KEY,
-        VITE_REACT_APP_LOGOUT_REDIRECT_URL
+        VITE_REACT_APP_LOGOUT_REDIRECT_URL,
+        VITE_REACT_APP_API_FRONT_URL
     } = import.meta.env;
   
     const logoutHandler = async (event) => {
@@ -33,8 +34,10 @@ export default function LogoutLink({ children }) {
           })
         }
         if(type === TYPE_GOOGLE) {
+          const url = VITE_REACT_APP_API_FRONT_URL + "/login";
           await fetcher.delete(VITE_REACT_APP_API_BASE_URL + LOGOUT_API).then((res) => {
             localStorage.clear();
+            window.location.href = url;
           }).catch((err) => {
             console.err(err);
           })
