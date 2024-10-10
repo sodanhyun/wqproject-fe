@@ -10,7 +10,6 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    // Get the ID of the sbb:latest image
                     def oldImageId = sh(script: "docker images fe_wqproject:latest -q", returnStdout: true).trim()
                     env.oldImageId = oldImageId
                 }
