@@ -36,18 +36,6 @@ pipeline {
                     cp /.env .env
                     """
                 }
-                
-                dir('.') {
-                    sh """
-                    npm ci
-                    """
-                }
-
-                dir('.') {
-                    sh """
-                    CI=false npm run build
-                    """
-                }
             }
             post {
                 success {
