@@ -9,7 +9,6 @@ export default function SocialLoginLink() {
     const KAKAO_AUTH_URL = `${VITE_REACT_APP_API_BASE_URL}/oauth2/authorization/kakao?redirect_uri=${REDIRECT_COMPONENT}&type=kakao`
 
     const handleSocialLogin = (type) => {
-        localStorage.clear();
         localStorage.setItem(USER_TYPE, type);
         if(type === TYPE_KAKAO) {
             window.location.href = KAKAO_AUTH_URL;
