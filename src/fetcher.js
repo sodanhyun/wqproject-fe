@@ -15,6 +15,7 @@ fetcher.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401 || error.response.status === 403) {
+      console.log("?")
       localStorage.clear();
       window.location.href = LOGIN_COMPONENT;
       const response = await axios.request(error.config);
