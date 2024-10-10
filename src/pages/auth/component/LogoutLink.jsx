@@ -33,7 +33,11 @@ export default function LogoutLink({ children }) {
           })
         }
         if(type === TYPE_GOOGLE) {
-            
+          await fetcher.delete(VITE_REACT_APP_API_BASE_URL + LOGOUT_API).then((res) => {
+            localStorage.clear();
+          }).catch((err) => {
+            console.err(err);
+          })
         }
       }
   

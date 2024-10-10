@@ -9,7 +9,6 @@ const LoginHandeler = () => {
   useEffect(() => {
     const lCode = localStorage.getItem('lCode');
     const searchParams = new URL(window.location.href).searchParams;
-    alert(lCode + " " + searchParams.get("authority"));
     localStorage.setItem(USER_ROLE, searchParams.get("authority"));
     if(lCode) {
       window.location.href = `${VITE_REACT_APP_API_FRONT_URL}/liveQuestions/${lCode}`;
