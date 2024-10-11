@@ -261,7 +261,7 @@ export default function Calendars() {
               </div>
             ))}
           </div>
-          <div className="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
+          <div className={`isolate grid w-full grid-cols-7 ${filteredLectures.length > 35 ? 'lg:grid-rows-6' : 'lg:grid-rows-5'} gap-px lg:hidden`}>
             {filteredLectures.map((day) => (
               <button
                 key={day.date}
