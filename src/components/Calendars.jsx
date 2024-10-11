@@ -3,117 +3,111 @@ import {
   ChevronRightIcon,
   ClockIcon,
 } from "@heroicons/react/20/solid";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import fetcher from "../fetcher";
+import { LECTURE_LIST_API } from "../constants/api_constants";
+import { Dialog, Transition } from "@headlessui/react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Calendars() {
+  const lectureColors = ["#6B33FF", "#33E0E8", "#FF33B9", "#33A8FF"]; // 강의 컬러
   const [lectures, setLectures] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const lectureColors = ["#6B33FF", "#33E0E8", "#FF33B9", "#33A8FF"]; // 강의 컬러
   const [selectedDay, setSelectedDay] = useState(null);
   const [open, setOpen] = useState(false);
-  // 오늘 날짜 가져오기
-  const date = new Date(currentYear, currentMonth);
-
-  // 이번 달의 첫 번째 날과 마지막 날 가져오기
-  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-  // 일자 배열 초기화
-  let days = [];
-
-  // 이번 달의 첫 날의 요일을 가져옴
-  const firstDayOfWeek = firstDay.getDay();
-
-  // 이전 달의 마지막 날을 가져옴
-  const lastDayOfLastMonth = new Date(date.getFullYear(), date.getMonth(), 0);
-
-  // 이전 달의 마지막 날짜부터 시작하여 이번 달 첫 날의 요일만큼 날짜를 추가
-  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    let day = {
-      date: `${lastDayOfLastMonth.getFullYear()}-${String(
-        lastDayOfLastMonth.getMonth() + 1
-      ).padStart(2, "0")}-${String(lastDayOfLastMonth.getDate() - i).padStart(
-        2,
-        "0"
-      )}`,
-      isCurrentMonth: false,
-      events: [],
-    };
-    days.push(day);
-  }
-
-  // 이번 달의 모든 일자를 배열에 추가하기
-  for (let i = firstDay.getDate(); i <= lastDay.getDate(); i++) {
-    let day = {
-      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(i).padStart(2, "0")}`,
-      isCurrentMonth: true,
-      events: [],
-    };
-    days.push(day);
-  }
 
   useEffect(() => {
-    const fetchLectures = async () => {
-      try {
-        const response = await fetcher.get("/lecture/list");
-        setLectures(response.data);
-
-        // 일자 배열 초기화
-        let updatedDays = [...days];
-
-        // 강의 데이터를 날짜에 맞게 추가
-        for (let i = 0; i < response.data.length; i++) {
-          let lecture = response.data[i];
+    const fetchLectures = async (days) => {
+      const url = `${LECTURE_LIST_API}?date=${convertDateFormat(new Date(currentYear, currentMonth))}`;
+      await fetcher.get(url).then((res) => {
+        setLectures(res.data);
+        for (let i = 0; i < res.data.length; i++) {
+          let lecture = res.data[i];
           let sdate = new Date(lecture.sdate);
           let edate = new Date(lecture.edate);
-
-          for (
-            let d = new Date(sdate);
-            d <= edate;
-            d.setDate(d.getDate() + 1)
-          ) {
-            let dateString = `${d.getFullYear()}-${String(
-              d.getMonth() + 1
-            ).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
+          for ( let d = new Date(lecture.sdate); d <= edate; d.setDate(d.getDate() + 1)) {
+            let dateString = 
+            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
             // 해당 날짜를 찾아 이벤트 추가
-            let dayIndex = updatedDays.findIndex(
-              (day) => day.date === dateString
-            );
-
+            let dayIndex = days.findIndex((day) => day.date === dateString);
             if (dayIndex !== -1) {
-              updatedDays[dayIndex].events.push({
-                id: lecture.lCode,
+              days[dayIndex].events.push({
+                id: lecture.lcode,
                 name: lecture.title,
                 datetime: sdate.toISOString(),
                 time: `${sdate.getHours()}:${sdate.getMinutes()}`,
                 color: lectureColors[i % lectureColors.length], // 색상 할당
               });
             }
-
-            if (+sdate === +edate) break;
           }
         }
-
-        setFilteredLectures(updatedDays);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+        setFilteredLectures(days);
+      }).catch((err) => {
+        console.error("Error:", err);
+      });
     };
-
-    fetchLectures();
+    fetchLectures(initDays());
   }, [currentMonth, currentYear]);
+
+  const initDays = () => {
+    const currentDate = new Date(currentYear, currentMonth);
+    // 이번 달의 첫 번째 날과 마지막 날 가져오기
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    // 일자 배열 초기화
+    let days = new Array();
+    // 이전 달의 마지막 날을 가져옴
+    const lastDayOfLastMonth = new Date(lastDay.getFullYear(), lastDay.getMonth(), 0);
+    const firstDayOfNextMonth = new Date(lastDay.getFullYear(), lastDay.getMonth() + 1, 1);
+    // 이전 달의 마지막 날짜부터 시작하여 이번 달 첫 날의 요일만큼 날짜를 추가
+    for (let i = firstDay.getDay() - 1; i >= 0; i--) {
+      let day = {
+        date: 
+        `${lastDayOfLastMonth.getFullYear()}-${String(lastDayOfLastMonth.getMonth() + 1).padStart(2, "0")}-${String(lastDayOfLastMonth.getDate() - i).padStart(2, "0")}`,
+        isCurrentMonth: false,
+        events: [],
+      };
+      days.push(day);
+    }
+    // 이번 달의 모든 일자를 배열에 추가하기
+    for (let i = firstDay.getDate(); i <= lastDay.getDate(); i++) {
+      let day = {
+        date: 
+        `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`,
+        isCurrentMonth: true,
+        events: [],
+      };
+      days.push(day);
+    }
+    // 달력의 남은 토요일까지 다음 달의 일자를 배열에 추가하기
+    for (let i = lastDay.getDay(); i < 6; i++) {
+      let day = {
+        date: 
+        `${firstDayOfNextMonth.getFullYear()}-${String(firstDayOfNextMonth.getMonth() + 1).padStart(2, "0")}-${String(firstDayOfNextMonth.getDate() ).padStart(2, "0")}`,
+        isCurrentMonth: false,
+        events: [],
+      };
+      firstDayOfNextMonth.setDate(firstDayOfNextMonth.getDate() + 1);
+      days.push(day);
+    }
+    return days;
+  }
+
+  const convertDateFormat = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObj.getDate()).slice(-2);
+    const hours = ("0" + dateObj.getHours()).slice(-2);
+    const minutes = ("0" + dateObj.getMinutes()).slice(-2);
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
 
   // 이전 월로 이동하는 함수
   const previousMonth = () => {
@@ -135,7 +129,6 @@ export default function Calendars() {
     }
   };
 
-  const today = new Date().toISOString().split("T")[0]; // 현재 날짜
   // 모달용
   const showMoreEvents = (day) => {
     setSelectedDay(day);
@@ -146,9 +139,9 @@ export default function Calendars() {
     <div className="lg:flex lg:h-full lg:flex-col">
       <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:flex-none">
         <h1 className="text-base font-semibold leading-6 text-gray-900">
-          <time dateTime={`${date.getFullYear()}-${currentMonth + 1}`}>
-            {new Date(date.getFullYear(), currentMonth).toLocaleString(
-              "en-US",
+          <time dateTime={`${new Date(currentYear, currentMonth).getFullYear()}-${currentMonth + 1}`}>
+            {new Date(new Date(currentYear, currentMonth).getFullYear(), currentMonth).toLocaleString(
+              "kr",
               {
                 month: "long",
                 year: "numeric",
@@ -176,7 +169,7 @@ export default function Calendars() {
                 setCurrentYear(today.getFullYear());
               }}
             >
-              Today
+            {new Date(new Date(currentYear, currentMonth).getFullYear(), currentMonth).toLocaleString("kr",{month: "long"})}
             </button>
             <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
             <button
@@ -216,7 +209,7 @@ export default function Calendars() {
           </div>
         </div>
         <div className="flex  bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-          <div className="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
+          <div className={`hidden w-full lg:grid lg:grid-cols-7 ${filteredLectures.length > 35 ? 'lg:grid-rows-6' : 'lg:grid-rows-5'} lg:gap-px`}>
             {filteredLectures.map((day) => (
               <div
                 key={day.date}
@@ -228,7 +221,7 @@ export default function Calendars() {
                 <time
                   dateTime={day.date}
                   className={
-                    day.date === today
+                    day.date === new Date().toISOString().split("T")[0]
                       ? "flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 font-semibold text-white" // 오늘이면 동그라미로 표시
                       : undefined
                   }
@@ -319,7 +312,7 @@ export default function Calendars() {
       </div>
 
       {lectures.length > 0 && (
-        <div className="px-4 py-10 sm:px-6 lg:hidden">
+        <div className="px-4 py-10 sm:px-6">
           <ol className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5">
             {lectures
               .filter((lecture) => {
@@ -332,7 +325,7 @@ export default function Calendars() {
               })
               .map((lecture) => (
                 <li
-                  key={lecture.lCode}
+                  key={lecture.lcode}
                   className="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50"
                 >
                   <div className="flex-auto">

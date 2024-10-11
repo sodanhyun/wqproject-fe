@@ -1,8 +1,9 @@
 
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 
-export default function Pagination({ currentPage, itemsPerPage, totalItems, setCurrentPage }) {
-  const totalPages = Math.ceil(totalItems / itemsPerPage); // 전체 페이지 수
+const MAX_PAGENATION_SIZE = 10;
+
+export default function Pagination({ currentPage, totalPages, setCurrentPage }) {
 
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -11,8 +12,21 @@ export default function Pagination({ currentPage, itemsPerPage, totalItems, setC
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
   };
-
-  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+  
+  const pageNumbers = Array.from(
+    { length: (() => {
+        if(currentPage % 10 !== 0 && Math.floor(currentPage / 10) === Math.floor(totalPages / 10)) {
+          return totalPages-(Math.floor(currentPage / 10)*10);
+        }
+        return MAX_PAGENATION_SIZE;
+      })()
+    }, (_, index) => {
+      if(currentPage % 10 === 0) {
+        return 1 + index + (Math.floor((currentPage-1) / 10))*10;
+      }
+      return 1 + index + (Math.floor(currentPage / 10))*10;
+    }
+  );
 
   return (
      <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 mb-10 mt-10">

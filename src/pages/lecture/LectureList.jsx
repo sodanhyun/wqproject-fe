@@ -14,7 +14,7 @@ import DetailModal from "./modal/DetailModal.jsx";
 import useStore from "../../store.js";
 import Pagination from "../../components/common/Pagination";
 import Logo from "/assets/logo/logo_gray.png"
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 5;
 
 const LectureList = () => {
   const { setShowDetailForm } = useStore((state) => state);
@@ -26,19 +26,38 @@ const LectureList = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [lectureData, setLectureData] = useState([]);
   const [modalDataId, setModalDataId] = useState("");
+  const [totalPages, setTotalPages] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchLectureData();
-  }, [sdate, edate, keyword]);
+  }, [currentPage])
+
+  const searchLectureData = async () => {
+    setCurrentPage(1);
+    fetchLectureData();
+  }
+
+  const convertDateFormat = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObj.getDate()).slice(-2);
+    const hours = ("0" + dateObj.getHours()).slice(-2);
+    const minutes = ("0" + dateObj.getMinutes()).slice(-2);
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
 
   const fetchLectureData = async () => {
-    await fetcher.post(FILTER_LECTURE_LIST_API, {
+    const url = `${FILTER_LECTURE_LIST_API}/${currentPage-1}?itemsPerPage=${ITEMS_PER_PAGE}`;
+    await fetcher.post(url, {
       keyword: keyword,
-      sdate: sdate ? sdate.toISOString().slice(0, -8) : null,
-      edate: edate ? edate.toISOString().slice(0, -8) : null,
+      sdate: sdate ? convertDateFormat(sdate) : null,
+      edate: edate ? convertDateFormat(edate) : null,
     }).then((res) => {
-      setLectureData(res.data);
+      setLectureData(res.data.content);
+      setTotalPages(res.data.totalPages);
     }).catch((err) => {
       console.error("강의 데이터 가져오기 오류:", err);
     });
@@ -99,15 +118,7 @@ const LectureList = () => {
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5  px-4 shadow-sm sm:px-6 lg:px-8">
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                <form
-                  className="flex flex-1"
-                  action="#"
-                  method="GET"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    fetchLectureData();
-                  }}
-                >
+                <div className="flex flex-1">
                   <label htmlFor="search-field" className="sr-only">
                     Search
                   </label>
@@ -126,7 +137,7 @@ const LectureList = () => {
                       name="keyword"
                     />
                   </div>
-                </form>
+                </div>
                 <CalendarDaysIcon
                   className="w-8 ml-2 text-gray-500 cursor-pointer"
                   onClick={handleDatePickerIconClick} 
@@ -148,7 +159,7 @@ const LectureList = () => {
                   </div>
                 )}
                 <button
-                  onClick={fetchLectureData}
+                  onClick={searchLectureData}
                   className="inline-block px-4 py-2 ml-2 text-sm font-semibold text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 "
                 >
                   검색
@@ -161,10 +172,6 @@ const LectureList = () => {
             <ul role="list" className="space-y-3">
               {lectureData.length > 0 ? (
                 lectureData
-                  .slice(
-                    (currentPage - 1) * ITEMS_PER_PAGE,
-                    currentPage * ITEMS_PER_PAGE
-                  )
                   .map((data) => (
                     <li
                       key={data.lcode}
@@ -242,8 +249,7 @@ const LectureList = () => {
             </ul>
             <Pagination
               currentPage={currentPage}
-              itemsPerPage={ITEMS_PER_PAGE}
-              totalItems={lectureData.length}
+              totalPages={totalPages}
               setCurrentPage={setCurrentPage}
             />
           </div>
