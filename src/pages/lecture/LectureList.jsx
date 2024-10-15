@@ -28,6 +28,8 @@ const LectureList = () => {
   const [modalDataId, setModalDataId] = useState("");
   const [totalPages, setTotalPages] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [searchingCondTxt, setSearchingCondTxt] = useState(false);
 
   useEffect(() => {
     fetchLectureData();
@@ -35,6 +37,10 @@ const LectureList = () => {
 
   const searchLectureData = async () => {
     setCurrentPage(1);
+    const searchingText = sdate ? getFormattedDate(new Date(sdate), false) + ' 부터 ' + 
+    (edate ? getFormattedDate(new Date(edate), false) + ' 까지 ' : '') + '조회된 결과'
+    : '';
+    setSearchingCondTxt(searchingText);
     fetchLectureData();
   }
 
@@ -50,6 +56,7 @@ const LectureList = () => {
   }
 
   const fetchLectureData = async () => {
+    setLoading(true);
     const url = `${FILTER_LECTURE_LIST_API}/${currentPage-1}?itemsPerPage=${ITEMS_PER_PAGE}`;
     await fetcher.post(url, {
       keyword: keyword,
@@ -58,13 +65,15 @@ const LectureList = () => {
     }).then((res) => {
       setLectureData(res.data.content);
       setTotalPages(res.data.totalPages);
+      setLoading(false);
     }).catch((err) => {
       console.error("강의 데이터 가져오기 오류:", err);
     });
   };
 
-  const handleDatePickerIconClick = () => {
-    setShowDatePicker(!showDatePicker);
+  const handleDatePickerIconClick = (e) => {
+    e.stopPropagation();
+    setShowDatePicker(true);
   };
 
   const handleDetailClick = (lCode) => {
@@ -92,21 +101,23 @@ const LectureList = () => {
     }
   });
 
-  const getFormattedDate = useCallback((date) => {
+  const getFormattedDate = (date, needTime) => {
     const year = date.getFullYear();
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
+    if(!needTime) {
+      return `${year}년 ${month}월 ${day}일`;
+    }
     const hours = ("0" + date.getHours()).slice(-2);
     const minutes = ("0" + date.getMinutes()).slice(-2);
-
     return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
-  });
+  };
 
   return (
     <>
       <Header />
 
-      <div className="py-10">
+      <div className="py-10" onClick={() => setShowDatePicker(false)}>
         <header>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 text-center">
@@ -143,7 +154,9 @@ const LectureList = () => {
                   onClick={handleDatePickerIconClick} 
                 />
                 {showDatePicker && (
-                  <div className="flex items-center flex-wrap">
+                  <dialog 
+                  className="flex items-center flex-wrap"
+                  onClick={(e) => e.stopPropagation()}>
                     <DatePicker
                        selected={sdate}
                       onChange={(dates) => {
@@ -156,7 +169,7 @@ const LectureList = () => {
                       selectsRange
                       inline
                     />
-                  </div>
+                  </dialog>
                 )}
                 <button
                   onClick={searchLectureData}
@@ -167,8 +180,11 @@ const LectureList = () => {
               </div>
             </div>
           </div>
-
-          <div className="mt-4 p-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {searchingCondTxt && <div className="p-4 mx-auto sm:px-6 lg:px-8">
+            <p className="text-gray-500 text-sm">{searchingCondTxt}</p>
+          </div>}
+          <div className="p-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
             <ul role="list" className="space-y-3">
               {lectureData.length > 0 ? (
                 lectureData
@@ -196,10 +212,10 @@ const LectureList = () => {
                         <div className="flex my-2 justify-between items-center">
                           <div>
                             <p className="text-sm from-stone-600">
-                              시작 : {getFormattedDate(new Date(data.sdate))}
+                              시작 : {getFormattedDate(new Date(data.sdate), true)}
                             </p>
                             <p className="text-sm from-stone-600">
-                              종료 : {getFormattedDate(new Date(data.edate))}
+                              종료 : {getFormattedDate(new Date(data.edate), true)}
                             </p>
                           </div>
                         </div>
@@ -246,7 +262,7 @@ const LectureList = () => {
                   <p className="flex justify-centerfont-semibold mt-2">등록된 강의가 없습니다.</p>
                 </div>
               )}
-            </ul>
+            </ul>}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

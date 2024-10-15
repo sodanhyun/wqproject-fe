@@ -22,11 +22,13 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const [noImage, setNoImage] = useState(false);
   const [imgPreview, setImgPreview] = useState(null);
   const [imgFile, setImgFile] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLectureInfo = async () => {
       await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
         setReqData(res.data);
+        setLoading(false);
       });
     };
     fetchLectureInfo();
@@ -90,6 +92,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       <div className="grid grid-cols-1  gap-y-8 pt-10 md:grid-cols-1 px-4">
+      {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
         <form
           className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
@@ -140,26 +143,39 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                 <span className="block text-sm font-medium leading-6 text-gray-900">
                   강의시간
                 </span>
-                <div className="mt-2 flex">
-                  <input
-                    value={reqData.sdate}
-                    onChange={onChangeHandler}
-                    name="sdate"
-                    type="datetime-local"
-                    id="starttimepicker"
-                    className="block w-56 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
-                    min={new Date().toISOString().slice(0, 16)}
-                  />
-                  ~
-                  <input
-                    value={reqData.edate}
-                    onChange={onChangeHandler}
-                    name="edate"
-                    type="datetime-local"
-                    id="endtimepicker"
-                    className="block w-56 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
-                    min={new Date().toISOString().slice(0, 16)}
-                  />
+                <div className="mt-2">
+                  <div className="inline-block">
+                    <label
+                      htmlFor="starttimepicker"
+                      className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                      시작
+                    </label>
+                    <input
+                      value={reqData.sdate}
+                      onChange={onChangeHandler}
+                      name="sdate"
+                      type="datetime-local"
+                      id="starttimepicker"
+                      className="ml-2 inline-block block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
+                  </div>
+                  <div className="mt-3 inline-block">
+                    <label
+                      htmlFor="endtimepicker"
+                      className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                      종료
+                    </label>
+                    <input
+                      value={reqData.edate}
+                      onChange={onChangeHandler}
+                      name="edate"
+                      type="datetime-local"
+                      id="endtimepicker"
+                      className="ml-2 inline-block block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -251,7 +267,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
               </div>
             </div>
           </div>
-        </form>
+        </form>}
 
         <div className="mb-3 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
           <button

@@ -20,6 +20,7 @@ export default function Calendars() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedDay, setSelectedDay] = useState(null);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLectures = async (days) => {
@@ -47,6 +48,7 @@ export default function Calendars() {
           }
         }
         setFilteredLectures(days);
+        setLoading(false);
       }).catch((err) => {
         console.error("Error:", err);
       });
@@ -184,6 +186,7 @@ export default function Calendars() {
           <div className="hidden md:ml-4 md:flex md:items-center"></div>
         </div>
       </header>
+      {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
       <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
         <div className="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none">
           <div className="bg-white py-2">
@@ -309,7 +312,7 @@ export default function Calendars() {
             ))}
           </div>
         </div>
-      </div>
+      </div>}
 
       {lectures.length > 0 && (
         <div className="px-4 py-10 sm:px-6">

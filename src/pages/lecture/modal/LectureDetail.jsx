@@ -11,11 +11,13 @@ const LectureDetail = ({ lCode, onClose }) => {
   const { setShowDetailForm } = useStore((state) => state);
   const [lectureData, setLectureData] = useState({});
   const [noImage, setNoImage] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLectureInfo = () => {
       fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
         setLectureData(res.data);
+        setLoading(false);
       });
     };
     fetchLectureInfo();
@@ -34,92 +36,93 @@ const LectureDetail = ({ lCode, onClose }) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-1 px-4">
-        <div className="px-4 py-6 sm:p-8">
-          <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="col-span-full">
-              <label
-                htmlFor="Topic"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                강의제목
-              </label>
-              <div className="mt-2">
-                <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 text-center">
-                  {lectureData.title}
-                </h1>
+        {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
+          <div className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2 px-4 py-6 sm:p-8">
+            <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="col-span-full">
+                <label
+                  htmlFor="Topic"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  강의제목
+                </label>
+                <div className="mt-2">
+                  <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 text-center">
+                    {lectureData.title}
+                  </h1>
+                </div>
               </div>
-            </div>
 
-            <div className="col-span-full">
-              {noImage ? (
-                <p>첨부된 파일이 없습니다.</p>
-              ) : (
-                <img 
-                src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
-                alt="Lecture" 
-                onError={() => {setNoImage(true)}} />
-              )}
-            </div>
-
-            <div className="col-span-full">
-              <label
-                htmlFor="Title"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                강연자
-              </label>
-              <div className="mt-2">
-                <p>{lectureData.speaker}</p>
+              <div className="col-span-full">
+                {noImage ? (
+                  <p>첨부된 파일이 없습니다.</p>
+                ) : (
+                  <img 
+                  src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
+                  alt="Lecture" 
+                  onError={() => {setNoImage(true)}} />
+                )}
               </div>
-            </div>
 
-            <div className="col-span-full">
-              <span className="block text-sm font-medium leading-6 text-gray-900">
-                강의시간
-              </span>
-              <div className="mt-2 flex flex-col">
-                <p>{getFormattedDate(lectureData.sdate)}</p>~<p>{getFormattedDate(lectureData.edate)}</p>
+              <div className="col-span-full">
+                <label
+                  htmlFor="Title"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  강연자
+                </label>
+                <div className="mt-2">
+                  <p>{lectureData.speaker}</p>
+                </div>
               </div>
-            </div>
 
-            <div className="col-span-full">
-              <label
-                htmlFor="Place"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                강의장소
-              </label>
-              <div className="mt-2">
-                <p>{lectureData.location}</p>
+              <div className="col-span-full">
+                <span className="block text-sm font-medium leading-6 text-gray-900">
+                  강의시간
+                </span>
+                <div className="mt-2 flex flex-col">
+                  <p>{getFormattedDate(lectureData.sdate)}</p>~<p>{getFormattedDate(lectureData.edate)}</p>
+                </div>
               </div>
-            </div>
 
-            <div className="col-span-full">
-              <label
-                htmlFor="ETC"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                질문 제한시간
-              </label>
-              <div className="mt-2">
-                <p>{lectureData.limitMin}분</p>
+              <div className="col-span-full">
+                <label
+                  htmlFor="Place"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  강의장소
+                </label>
+                <div className="mt-2">
+                  <p>{lectureData.location}</p>
+                </div>
               </div>
-            </div>
-            <div className="col-span-full">
-              <label
-                htmlFor="ETC"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                기타사항
-              </label>
-              <div className="mt-2">
-                <p>{lectureData.etc}</p>
-              </div>
-            </div>
 
+              <div className="col-span-full">
+                <label
+                  htmlFor="ETC"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  질문 제한시간
+                </label>
+                <div className="mt-2">
+                  <p>{lectureData.limitMin}분</p>
+                </div>
+              </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="ETC"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  기타사항
+                </label>
+                <div className="mt-2">
+                  <p>{lectureData.etc}</p>
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
-
+        }
         <div className="mb-3 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
           <button
             type="button"
