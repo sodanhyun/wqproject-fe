@@ -162,7 +162,7 @@ function NavLink({ href, children }) {
   return (
     <Popover>
       <Popover.Button as="div" className="block w-full p-2">
-        <Link to={href}>{children}</Link>
+        <Link className="block w-full" to={href}>{children}</Link>
       </Popover.Button>
     </Popover>
   );
