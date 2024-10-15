@@ -36,8 +36,8 @@ const DetailModal = ({lCode, fetchLectureData, onClose}) => {
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <div
-                    className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                  <div className="mt-3 text-center sm:mt-5">
+                    className="relative transform overflow-hidden rounded-lg bg-white px-2 pb-2 pt-5 text-left shadow-xl transition-all sm:my-4 sm:w-full sm:max-w-lg sm:p-6">
+                  <div className="text-center">
                     <h3  className="text-base font-semibold leading-6 text-gray-900">
                       { isShowDetailForm ? <LectureDetail lCode={lCode} fetchLectureData={fetchLectureData} onClose={onClose}/>
                         : <LectureModifyForm lCode={lCode} fetchLectureData={fetchLectureData} onClose={onClose}/>
