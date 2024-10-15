@@ -5,6 +5,11 @@ import { LECTURE_LIST_COMPONENT } from "../../constants/component_constants.js";
 import { Header } from "../../components/common/Header.jsx";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import DatePicker, {registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import ko from "date-fns/locale/ko";
+
+registerLocale("ko", ko)
 
 const LectureReg = () => {
   const navigate = useNavigate();
@@ -33,8 +38,12 @@ const LectureReg = () => {
       });
       return;
     }
+    let data = {...reqData};
+    data = { ...data, ["sdate"]: getFormattedDate(reqData.sdate)};
+    data = { ...data, ["edate"]: getFormattedDate(reqData.edate)};
+    console.log(data)
     const formData = new FormData();
-    formData.append("data", new Blob([JSON.stringify(reqData)], {type: "application/json"}));
+    formData.append("data", new Blob([JSON.stringify(data)], {type: "application/json"}));
     formData.append("image", imgFile);
     try {
       await fetcher.post(REGISTER_LECTURE_API, formData);
@@ -47,20 +56,6 @@ const LectureReg = () => {
 
   const onChangeHandler = (e) => {
     const {value, name} = e.target;
-    if(name==="edate" || name==="sdate") {
-      const edate = name==='edate' ? new Date(value) : new Date(reqData.edate);
-      const sdate = name==='sdate' ? new Date(value) : new Date(reqData.sdate);
-      if (edate!=new Date("") && sdate!=new Date("") && edate < sdate) {
-        toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        return;
-      }
-    }
     setReqData({ ...reqData, [name]: value});
   };
 
@@ -87,6 +82,15 @@ const LectureReg = () => {
       setImgPreview(reader.result);
     };
   };
+
+  const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
 
   return (
     <>
@@ -153,40 +157,61 @@ const LectureReg = () => {
                         <span className="block text-sm font-medium leading-6 text-gray-900">
                         <span className=" text-red-500">*</span>강의시간
                         </span>
-                        <div className="mt-2">
-                          <div className="block">
-                            <label
-                              htmlFor="starttimepicker"
-                              className="inline-block text-sm font-medium leading-6 text-gray-900">
-                              시작
-                              <input
-                                value={reqData.sdate}
-                                onChange={onChangeHandler}
-                                name="sdate"
-                                type="datetime-local"
-                                id="starttimepicker"
-                                className="sm:min-w-8 inline-block ml-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5 sm:"
-                                min={new Date().toISOString().slice(0, 16)}
-                              />
-                            </label>
-                          </div>
-                          <div className="mt-3 block">
-                            <label
-                              htmlFor="endtimepicker"
-                              className="inline-block text-sm font-medium leading-6 text-gray-900">
-                              종료
-                              <input
-                                value={reqData.edate}
-                                onChange={onChangeHandler}
-                                name="edate"
-                                type="datetime-local"
-                                id="endtimepicker"
-                                className="inline-block ml-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5"
-                                min={new Date().toISOString().slice(0, 16)}
-                              />
-                            </label>
-                          </div>
-                        </div>
+                      </div>
+                      <div className="sm:col-span-3">
+                        <DatePicker
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                          showTimeSelect
+                          dateFormat="yyyy/MM/dd a hh:mm"
+                          dateFormatCalendar="yyyy년 MM월"
+                          timeFormat="HH:mm"
+                          timeCaption="시작시간"
+                          placeholderText="시작일을 입력하십시오"
+                          selected={reqData.sdate}
+                          onChange={(sdate) => {
+                            if (reqData.edate!="" && reqData.edate < sdate) {
+                              toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                              });
+                              return;
+                            }
+                            setReqData({ ...reqData, ["sdate"]: sdate});
+                            }
+                          }
+                          locale="ko"
+                          timeIntervals={5}
+                        />
+                      </div>
+                      <div className="sm:col-span-3">
+                        <DatePicker
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                          showTimeSelect
+                          dateFormat="yyyy/MM/dd a hh:mm"
+                          dateFormatCalendar="yyyy년 MM월"
+                          timeFormat="HH:mm"
+                          timeCaption="종료시각"
+                          placeholderText="종료일을 입력하십시오"
+                          selected={reqData.edate}
+                          onChange={(edate) => {
+                            if (reqData.sdate!="" && edate < reqData.sdate) {
+                              toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                              });
+                              return;
+                            }
+                            setReqData({ ...reqData, ["edate"]: edate});
+                          }}
+                          locale="ko"
+                          timeIntervals={5}
+                        />
                       </div>
 
                       <div className="col-span-full">
