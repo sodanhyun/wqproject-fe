@@ -154,7 +154,7 @@ const LectureReg = () => {
                         <span className=" text-red-500">*</span>강의시간
                         </span>
                         <div className="mt-2">
-                          <div>
+                          <div className="block">
                             <label
                               htmlFor="starttimepicker"
                               className="inline-block text-sm font-medium leading-6 text-gray-900">
@@ -170,7 +170,7 @@ const LectureReg = () => {
                               />
                             </label>
                           </div>
-                          <div className="mt-3">
+                          <div className="mt-3 block">
                             <label
                               htmlFor="endtimepicker"
                               className="inline-block text-sm font-medium leading-6 text-gray-900">
