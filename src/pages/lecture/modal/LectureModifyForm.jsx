@@ -92,7 +92,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
-      <div className="grid grid-cols-1  gap-y-8 pt-10 md:grid-cols-1 px-4">
+      <div className="grid grid-cols-1 gap-y-8 md:grid-cols-1 px-4">
         <form
           className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
@@ -144,37 +144,37 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                   강의시간
                 </span>
                 <div className="mt-2">
-                  <div className="inline-block">
+                  <div>
                     <label
                       htmlFor="starttimepicker"
-                      className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                      className="inline-block text-sm font-medium leading-6 text-gray-900">
                       시작
+                      <input
+                        value={reqData.sdate}
+                        onChange={onChangeHandler}
+                        name="sdate"
+                        type="datetime-local"
+                        id="starttimepicker"
+                        className="ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        min={new Date().toISOString().slice(0, 16)}
+                      />
                     </label>
-                    <input
-                      value={reqData.sdate}
-                      onChange={onChangeHandler}
-                      name="sdate"
-                      type="datetime-local"
-                      id="starttimepicker"
-                      className="ml-2 inline-block block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
-                      min={new Date().toISOString().slice(0, 16)}
-                    />
                   </div>
-                  <div className="mt-3 inline-block">
+                  <div className="mt-3">
                     <label
                       htmlFor="endtimepicker"
-                      className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                      className="inline-block text-sm font-medium leading-6 text-gray-900">
                       종료
+                      <input
+                        value={reqData.edate}
+                        onChange={onChangeHandler}
+                        name="edate"
+                        type="datetime-local"
+                        id="endtimepicker"
+                        className="ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        min={new Date().toISOString().slice(0, 16)}
+                      />
                     </label>
-                    <input
-                      value={reqData.edate}
-                      onChange={onChangeHandler}
-                      name="edate"
-                      type="datetime-local"
-                      id="endtimepicker"
-                      className="ml-2 inline-block block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
-                      min={new Date().toISOString().slice(0, 16)}
-                    />
                   </div>
                 </div>
               </div>

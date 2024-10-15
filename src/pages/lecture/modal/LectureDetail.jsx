@@ -36,7 +36,7 @@ const LectureDetail = ({ lCode, onClose }) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
-      <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-1 px-4">
+      <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-1 px-4">
           <div className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2 px-4 py-6 sm:p-8">
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="col-span-full">
