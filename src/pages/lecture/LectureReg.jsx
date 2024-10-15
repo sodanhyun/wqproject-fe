@@ -155,25 +155,34 @@ const LectureReg = () => {
                         </span>
                         <div className="mt-2">
                           <div className="inline-block">
+                            <label
+                              htmlFor="starttimepicker"
+                              className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                              시작
+                            </label>
                             <input
                               value={reqData.sdate}
                               onChange={onChangeHandler}
                               name="sdate"
                               type="datetime-local"
                               id="starttimepicker"
-                              className="inline-block mr-2 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5"
+                              className="inline-block ml-3 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5"
                               min={new Date().toISOString().slice(0, 16)}
                             />
                           </div>
-                          <span>~</span>
                           <div className="mt-3 inline-block">
+                            <label
+                              htmlFor="endtimepicker"
+                              className="inline-block block text-sm font-medium leading-6 text-gray-900">
+                              종료
+                            </label>
                             <input
                               value={reqData.edate}
                               onChange={onChangeHandler}
                               name="edate"
                               type="datetime-local"
                               id="endtimepicker"
-                              className="inline-block ml-2 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5"
+                              className="inline-block ml-3 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5"
                               min={new Date().toISOString().slice(0, 16)}
                             />
                           </div>

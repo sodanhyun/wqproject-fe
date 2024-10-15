@@ -91,8 +91,8 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
 
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
-      <div className="grid grid-cols-1  gap-y-8 pt-10 md:grid-cols-1 px-4">
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
+      <div className="grid grid-cols-1  gap-y-8 pt-10 md:grid-cols-1 px-4">
         <form
           className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2"
           onSubmit={(e) => e.preventDefault()}
@@ -267,7 +267,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
               </div>
             </div>
           </div>
-        </form>}
+        </form>
 
         <div className="mb-3 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
           <button
@@ -285,7 +285,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
             취소
           </button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
