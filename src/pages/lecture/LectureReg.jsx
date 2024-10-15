@@ -162,10 +162,11 @@ const LectureReg = () => {
                               <input
                                 value={reqData.sdate}
                                 onChange={onChangeHandler}
+                                placeholder="날짜를 선택해주세요"
                                 name="sdate"
                                 type="datetime-local"
                                 id="starttimepicker"
-                                // className="inline-block ml-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5 sm:"
+                                className="inline-block ml-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 px-1.5 sm:"
                                 min={new Date().toISOString().slice(0, 16)}
                               />
                             </label>
