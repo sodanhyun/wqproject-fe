@@ -127,14 +127,14 @@ const LectureList = () => {
         </header>
         <main>
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-x-6 border-b border-white/5  px-4 shadow-sm sm:px-6 lg:px-8">
+            <div className="sticky top-0 z-40 flex h-15 shrink-0 items-center gap-x-6 border-b border-white/5  px-4 shadow-sm sm:px-6 lg:px-8">
               <div className="flex flex-1 py-2 gap-x-4 self-stretch lg:gap-x-6">
                 <div className="flex flex-1">
+                  <div className="relative w-full">
                   <MagnifyingGlassIcon
-                      className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-500"
+                      className="pointer-events-none absolute inset-y-0 left-1 h-full w-5 text-gray-500"
                       aria-hidden="true"
                     />
-                  <div className="relative w-full">
                     <input
                       value={keyword}
                       onChange={(e) => setKeyword(e.target.value)}
