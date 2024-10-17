@@ -34,6 +34,9 @@ pipeline {
                     sh """
                     cp /var/jenkins_home/.env .env
                     """
+                    sh """
+                    cp /var/jenkins_home/vite.config.js vite.config.js
+                    """
                 }
             }
             post {
