@@ -38,6 +38,16 @@ const LectureReg = () => {
       });
       return;
     }
+    if (reqData.edate <= reqData.sdate) {
+      toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
     let data = {...reqData};
     data = { ...data, ["sdate"]: getFormattedDate(reqData.sdate)};
     data = { ...data, ["edate"]: getFormattedDate(reqData.edate)};
@@ -128,7 +138,7 @@ const LectureReg = () => {
                             name="title"
                             id="Topic"
                             autoComplete="given-name"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                            className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -148,7 +158,7 @@ const LectureReg = () => {
                             name="speaker"
                             id="Title"
                             autoComplete="family-name"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                            className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -160,7 +170,7 @@ const LectureReg = () => {
                       </div>
                       <div className="sm:col-span-3">
                         <DatePicker
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                        className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           showTimeSelect
                           dateFormat="yyyy/MM/dd a hh:mm"
                           dateFormatCalendar="yyyy년 MM월"
@@ -168,27 +178,14 @@ const LectureReg = () => {
                           timeCaption="시작시간"
                           placeholderText="시작일을 입력하십시오"
                           selected={reqData.sdate}
-                          onChange={(sdate) => {
-                            if (reqData.edate!="" && reqData.edate < sdate) {
-                              toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
-                                autoClose: 3000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                              });
-                              return;
-                            }
-                            setReqData({ ...reqData, ["sdate"]: sdate});
-                            }
-                          }
+                          onChange={(sdate) => {setReqData({ ...reqData, ["sdate"]: sdate})}}
                           locale="ko"
                           timeIntervals={5}
                         />
                       </div>
                       <div className="sm:col-span-3">
                         <DatePicker
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                        className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           showTimeSelect
                           dateFormat="yyyy/MM/dd a hh:mm"
                           dateFormatCalendar="yyyy년 MM월"
@@ -196,19 +193,7 @@ const LectureReg = () => {
                           timeCaption="종료시각"
                           placeholderText="종료일을 입력하십시오"
                           selected={reqData.edate}
-                          onChange={(edate) => {
-                            if (reqData.sdate!="" && edate < reqData.sdate) {
-                              toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
-                                autoClose: 3000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                              });
-                              return;
-                            }
-                            setReqData({ ...reqData, ["edate"]: edate});
-                          }}
+                          onChange={(edate) => {setReqData({ ...reqData, ["edate"]: edate})}}
                           locale="ko"
                           timeIntervals={5}
                         />
@@ -229,7 +214,7 @@ const LectureReg = () => {
                             name="location"
                             id="Place"
                             autoComplete="family-name"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                            className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -250,7 +235,7 @@ const LectureReg = () => {
                             onChange={onChangeHandler}
                             value={reqData.limitMin}
                             autoComplete="family-name"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                            className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
@@ -269,14 +254,14 @@ const LectureReg = () => {
                             name="etc"
                             id="ETC"
                             autoComplete="street-address"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                            className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                           ></textarea>
                         </div>
                       </div>
                       <div className="sm:col-span-2">
                         <label
                           htmlFor="lectureImg"
-                          className="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
+                          className="cursor-pointer group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
                         >
                           이미지 업로드
                           <input
@@ -297,9 +282,9 @@ const LectureReg = () => {
                   <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
                     <button
                       type="submit"
-                      className="rounded-md bg-lightBlue px-3 py-2 text-sm font-semibold text-blue-700 shadow-sm hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                      className="rounded-md bg-lightBlue px-3 py-2 text-sm font-semibold text-blue-700 shadow-md hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                     >
-                      저장
+                      등록
                     </button>
                   </div>
                 </form>

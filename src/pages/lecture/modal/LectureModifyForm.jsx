@@ -5,6 +5,7 @@ import {
   LECTURE_IMAGE_API,
 } from "../../../constants/api_constants.js";
 import useStore from "../../../store.js";
+import { toast } from "react-toastify";
 
 const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
@@ -114,7 +115,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="title"
                     id="Topic"
                     autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -134,7 +135,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="speaker"
                     id="Title"
                     autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -155,7 +156,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                         name="sdate"
                         type="datetime-local"
                         id="starttimepicker"
-                        className="ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        className="hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
                         min={new Date().toISOString().slice(0, 16)}
                       />
                     </label>
@@ -171,7 +172,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                         name="edate"
                         type="datetime-local"
                         id="endtimepicker"
-                        className="ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        className="hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
                         min={new Date().toISOString().slice(0, 16)}
                       />
                     </label>
@@ -194,7 +195,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="location"
                     id="Place"
                     autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -215,7 +216,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     onChange={onChangeHandler}
                     value={reqData.limitMin}
                     autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -234,7 +235,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="ETC"
                     id="ETC"
                     autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
                   ></textarea>
                 </div>
               </div>
@@ -242,7 +243,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
               <div className="sm:col-span-6">
                 <label
                   htmlFor="lectureImg"
-                  className="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
+                  className="cursor-pointer group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
                 >
                   이미지 업로드
                   <input

@@ -151,7 +151,7 @@ function LogoLink({ href, children }) {
   return (
     <Link
       to={href}
-      className="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+      className="inline-block px-2 py-1 text-sm text-slate-700 rounded-3xl hover:bg-slate-100 hover:text-slate-900"
     >
       {children}
     </Link>
@@ -161,7 +161,7 @@ function LogoLink({ href, children }) {
 function NavLink({ href, children }) {
   return (
     <Popover>
-      <Popover.Button as="div" className="block w-full p-2">
+      <Popover.Button as="div" className="block w-full p-2 rounded-lg hover:bg-slate-100">
         <Link className="block w-full" to={href}>{children}</Link>
       </Popover.Button>
     </Popover>

@@ -128,49 +128,48 @@ const LectureList = () => {
         <main>
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5  px-4 shadow-sm sm:px-6 lg:px-8">
-              <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+              <div className="flex flex-1 py-2 gap-x-4 self-stretch lg:gap-x-6">
                 <div className="flex flex-1">
-                  <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <div className="relative w-full">
-                    <MagnifyingGlassIcon
+                  <MagnifyingGlassIcon
                       className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-500"
                       aria-hidden="true"
                     />
+                  <div className="relative w-full">
                     <input
                       value={keyword}
                       onChange={(e) => setKeyword(e.target.value)}
                       id="search-field"
-                      className="block h-full w-full border-0 bg-transparent py-0 pl-8 pr-0 text-gray-900 focus:ring-0 sm:text-sm"
+                      className="hover:bg-gray-100 focus:bg-gray-100 rounded-3xl block h-full w-full border-0 bg-transparent pl-8 pr-0 text-gray-900 focus:ring-0 sm:text-sm"
                       placeholder="강의 검색"
                       type="search"
                       name="keyword"
                     />
                   </div>
                 </div>
-                <CalendarDaysIcon
-                  className="w-8 ml-2 text-gray-500 cursor-pointer"
+                <div>
+                  {showDatePicker ? (
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <DatePicker
+                        selected={sdate}
+                        onChange={(dates) => {
+                          const [start, end] = dates;
+                          if(start && end) {
+                            setShowDatePicker(false)
+                          }
+                          setSdate(start);
+                          setEdate(end);
+                        }}
+                        startDate={sdate}
+                        endDate={edate}
+                        selectsRange
+                        inline
+                      />
+                    </div>
+                  ) : <CalendarDaysIcon
+                  className="hover:brightness-50 w-8 ml-2 text-gray-500 cursor-pointer"
                   onClick={handleDatePickerIconClick} 
-                />
-                {showDatePicker && (
-                  <dialog 
-                  className="flex items-center flex-wrap"
-                  onClick={(e) => e.stopPropagation()}>
-                    <DatePicker
-                       selected={sdate}
-                      onChange={(dates) => {
-                        const [start, end] = dates;
-                        setSdate(start);
-                        setEdate(end);
-                      }}
-                      startDate={sdate}
-                      endDate={edate}
-                      selectsRange
-                      inline
-                    />
-                  </dialog>
-                )}
+                />}
+                </div>
                 <button
                   onClick={searchLectureData}
                   className="inline-block px-4 py-2 ml-2 text-sm font-semibold text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 "
@@ -180,10 +179,11 @@ const LectureList = () => {
               </div>
             </div>
           </div>
+          
+          <div className="p-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {searchingCondTxt && <div className="p-4 mx-auto sm:px-6 lg:px-8">
             <p className="text-gray-500 text-sm">{searchingCondTxt}</p>
           </div>}
-          <div className="p-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
             <ul role="list" className="space-y-3">
               {lectureData.length > 0 ? (
@@ -191,7 +191,7 @@ const LectureList = () => {
                   .map((data) => (
                     <li
                       key={data.lcode}
-                      className="overflow-hidden bg-postYellow px-4 py-4 shadow rounded-lg sm:px-6"
+                      className="hover:bg-gray-50 overflow-hidden bg-postYellow px-4 py-4 shadow rounded-lg sm:px-6"
                     >
                       <div className="flex flex-col">
                         <div className="flex items-center">
@@ -223,7 +223,7 @@ const LectureList = () => {
                           <div className="flex justify-end ssm:flex-col">
                             <button
                               type="button"
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 mr-2 ssm:mt-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:mt-2"
                             >
                               <Link to={`/liveQuestions/${data.lcode}`}>
                                 질문리스트
@@ -231,7 +231,7 @@ const LectureList = () => {
                             </button>
                             <button
                               type="button"
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 mr-2 ssm:my-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:my-2"
                             >
                               <Link to={`/pickQuestions/${data.lcode}`}>
                                 답변리스트
@@ -240,14 +240,14 @@ const LectureList = () => {
                             <button
                               type="button"
                               onClick={() => handleDetailClick(data.lcode)}
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 mr-2 ssm:mb-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:mb-2"
                             >
                               상세
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteClick(data.lcode)}
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 mr-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2"
                             >
                               삭제
                             </button>

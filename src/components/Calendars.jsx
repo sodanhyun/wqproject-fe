@@ -253,7 +253,7 @@ export default function Calendars() {
                     ))}
                     {day.events.length > 2 && (
                       <li
-                        className="text-gray-500 cursor-pointer"
+                        className="rounded-full text-gray-500 cursor-pointer focus-within:bg-gray-100 hover:bg-gray-100"
                         onClick={() => showMoreEvents(day)}
                       >
                         + {day.events.length - 2} more
