@@ -32,7 +32,7 @@ pipeline {
             steps {
                 dir('.') {
                     sh """
-                    cp /.env .env
+                    cp /var/jenkins_home/.env
                     """
                 }
             }
