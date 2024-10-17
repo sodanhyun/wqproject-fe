@@ -8,8 +8,8 @@ export default defineConfig({
   // Vite 개발 서버 설정 정의
   server: {
     https: {
-      key: fs.readFileSync("_wildcard.localhost.dev+3-key.pem"),
-      cert: fs.readFileSync("_wildcard.localhost.dev+3.pem")
+      key: fs.readFileSync("localhost+3-key.pem"),
+      cert: fs.readFileSync("localhost+3.pem")
     },
     host: "localhost",
     // Proxy 설정

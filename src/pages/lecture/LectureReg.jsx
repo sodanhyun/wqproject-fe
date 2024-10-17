@@ -25,6 +25,7 @@ const LectureReg = () => {
   });
   const [imgPreview, setImgPreview] = useState("");
   const [imgFile, setImgFile] = useState("");
+  const [pendding, setPendding] = useState(false);
 
   const registerLecture = async (e) => {
     e.preventDefault();
@@ -55,13 +56,14 @@ const LectureReg = () => {
     const formData = new FormData();
     formData.append("data", new Blob([JSON.stringify(data)], {type: "application/json"}));
     formData.append("image", imgFile);
-    try {
-      await fetcher.post(REGISTER_LECTURE_API, formData);
+    setPendding(true);
+    await fetcher.post(REGISTER_LECTURE_API, formData).then(() => {
       toast.success("등록이 완료되었습니다.");
       navigate(LECTURE_LIST_COMPONENT);
-    } catch (error) {
-      console.error("강의 등록 오류:", error);
-    }
+    }).catch ((err) => {
+      console.error("강의 등록 오류:", err);
+      setPendding(false);
+    })
   };
 
   const onChangeHandler = (e) => {
@@ -105,6 +107,11 @@ const LectureReg = () => {
   return (
     <>
       <Header />
+      {pendding && 
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+      </div>
+      }
       <div className="py-10">
         <header>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

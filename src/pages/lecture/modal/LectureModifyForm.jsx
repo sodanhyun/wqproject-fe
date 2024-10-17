@@ -24,6 +24,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const [imgPreview, setImgPreview] = useState(null);
   const [imgFile, setImgFile] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pendding, setPendding] = useState(false);
 
   useEffect(() => {
     const fetchLectureInfo = async () => {
@@ -84,14 +85,22 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     formData.append("data",
       new Blob([JSON.stringify(reqData)], { type: "application/json" }));
     formData.append("image", imgFile);
+    setPendding(true);
     fetcher.patch(`${LECTURE_HANDLE_API}/${lCode}`, formData).then(() => {
       setShowDetailForm(true);
       fetchLectureData();
+    }).error((err) => {
+      setPendding(false);
     });
   };
 
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
+      {pendding && 
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+      </div>
+      }
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
       <div className="grid grid-cols-1 gap-y-8 md:grid-cols-1 px-4">
         <form

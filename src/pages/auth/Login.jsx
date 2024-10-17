@@ -23,6 +23,7 @@ export default function Login() {
     id: "",
     password: "",
   });
+  const [pendding, setPendding] = useState(false);
   
   const onChangeHandler = (e) => {
     const {value, name} = e.target;
@@ -31,6 +32,7 @@ export default function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setPendding(true);
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
       if(res.data.userRole.type !== ADMIN) {
@@ -56,6 +58,7 @@ export default function Login() {
         navigate(MAIN_COMPONENT);
       }
     }).catch((err) => {
+      setPendding(false);
       toast.error("아이디 또는 비밀번호가 잘못되었습니다.", {
         autoClose: 800,
         hideProgressBar: false,
@@ -70,6 +73,11 @@ export default function Login() {
   return (
     <div className="h-screen">
       <SlimLayout>
+      {pendding && 
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+      </div>
+      }
         <div className="flex">
           <Link href="/" aria-label="Home">
             <img src={WqLogo} className="w-40"/>

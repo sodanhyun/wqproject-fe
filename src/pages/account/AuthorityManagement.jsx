@@ -19,12 +19,15 @@ export default function AuthorityManagement() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingMemberId, setEditingMemberId] = useState(null);
   const [selectedRoleForEditMember, setSelectedRoleForEditMember] = useState("");
+  const [pendding, setPendding] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       await fetcher.get(ROLE_API).then((res) => {
         setMembers(res.data.members);
         setAuthorities(res.data.authorities);
+        setLoading(false);
       }).catch((err) => {
       console.error("Error:", err);
       });
@@ -38,20 +41,24 @@ export default function AuthorityManagement() {
   };
 
   const handleSaveClick = async (memberId, selectedRoleForEditMember) => {
-    try {
-      await fetcher.patch(ROLE_UPDATE_API, {
-        memberId: memberId,
-        memberRole: selectedRoleForEditMember
-      });
-      await fetcher.get(ROLE_API).then((res) => {
+    setPendding(true);
+    await fetcher.patch(ROLE_UPDATE_API, {
+      memberId: memberId,
+      memberRole: selectedRoleForEditMember
+    }).then(() => {
+      fetcher.get(ROLE_API).then((res) => {
         setMembers(Object.assign([], res.data.members));
         setAuthorities(res.data.authorities);
+      }).then(() =>{
+        setEditingMemberId(null);
+        setPendding(false);
+      }).catch((err) => {
+        console.error("Error:", err);
       });
-      setEditingMemberId(null);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+    }).catch((err) => {
+      console.error("Error:", err);
+    });
+  }
 
   const handleDeleteClick = async (memberId) => {
     try {
@@ -74,9 +81,14 @@ export default function AuthorityManagement() {
   return (
     <div>
       <Header />
+      {pendding && 
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+      </div>
+      }
       <Container className="pb-16 pt-12  lg:pt-12">
         <div className="px-4 sm:px-6 lg:px-8">
-          <div className="sm:flex sm:items-center">
+          <div className="sm:items-center">
             <div className="sm:flex-auto">
               <h1 className=" font-semibold leading-6 text-gray-900 text-center">
                 권한관리
@@ -124,7 +136,11 @@ export default function AuthorityManagement() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {members.map((member) =>
+                    {loading ? 
+                    <div class="absolute left-1/2 transform -translate-x-1/2">
+                      <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin my-4"></div>
+                    </div> 
+                    : members.map((member) =>
                         editingMemberId === member.id ? (
                           <tr key={member.id}>
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">

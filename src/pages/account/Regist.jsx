@@ -25,6 +25,7 @@ export default function Regist() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [idError, setIdError] = useState("");
+  const [pendding, setPendding] = useState(false);
 
   const onChangeHandler = (e) => {
     const {value, name} = e.target;
@@ -56,6 +57,7 @@ export default function Regist() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setPendding(true);
     const {confirmPassword, ...others} = reqData;
     await axios.post(VITE_REACT_APP_API_BASE_URL + SIGNUP_API ,others)
     .then((res) => {
@@ -68,6 +70,7 @@ export default function Regist() {
       });
       navigate(LOGIN_COMPONENT);
     }).catch((err) => {
+      setPendding(false);
       if (err.response &&
         err.response.status === 405 &&
         err.response.data === "이미 가입된 유저입니다."
@@ -94,6 +97,11 @@ export default function Regist() {
   return (
     <div className="h-screen">
       <SlimLayout>
+      {pendding && 
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+      </div>
+      }
         <div className="flex">
           <Link href="/" aria-label="Home">
           <img src={WqLogo} className="w-40"/>
