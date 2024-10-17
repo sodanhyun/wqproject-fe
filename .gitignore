@@ -59,3 +59,8 @@ out/
 /yarn-error.log*
 /.env
 /vite.config.js
+*.pem
+*.pem
+_wildcard.localhost.dev+3.pem
+vite.config.js
+vite.config.js
