@@ -148,14 +148,14 @@ const LectureList = () => {
                 </div>
                 <div>
                   {showDatePicker ? (
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div className="transform -translate-x-56 fixed flex items-center flex-wrap">
+                    <dialog 
+                      className="flex items-center flex-wrap"
+                      onClick={(e) => e.stopPropagation()}>
                       <DatePicker
                         selected={sdate}
                         onChange={(dates) => {
                           const [start, end] = dates;
-                          if(start && end) {
-                            setShowDatePicker(false)
-                          }
                           setSdate(start);
                           setEdate(end);
                         }}
@@ -164,6 +164,7 @@ const LectureList = () => {
                         selectsRange
                         inline
                       />
+                      </dialog>
                     </div>
                   ) : <CalendarDaysIcon
                   className="hover:brightness-50 w-8 ml-2 text-gray-500 cursor-pointer"
