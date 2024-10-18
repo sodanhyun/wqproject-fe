@@ -14,11 +14,11 @@ export default function SelectPermission({authorities, onChange, initialRole }) 
         id="location"
         value={selectedAuthority}
         onChange={handleChange}
-        className="mt-2 block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"
+        className="text-xs h-full w-fit rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 hover:ring-2 focus:ring-2 focus:ring-blue-600"
       >
         {authorities.map((authority, index) => (
           <option key={index} value={authority.type}>
-            {authority.type}
+            {authority.name}
           </option>
         ))}
       </select>

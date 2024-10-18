@@ -11,6 +11,7 @@ import {
 } from "../../constants/api_constants.js";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
+import Pagination from "../../components/common/Pagination.jsx";
 
 export default function AuthorityManagement() {
   const [members, setMembers] = useState([]);
@@ -21,19 +22,24 @@ export default function AuthorityManagement() {
   const [selectedRoleForEditMember, setSelectedRoleForEditMember] = useState("");
   const [pendding, setPendding] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetcher.get(ROLE_API).then((res) => {
-        setMembers(res.data.members);
+      setLoading(true);
+      await fetcher.get(`${ROLE_API}/${currentPage-1}?itemsPerPage=${ITEMS_PER_PAGE}`).then((res) => {
+        setMembers(res.data.content);
         setAuthorities(res.data.authorities);
+        setTotalPages(res.data.totalPages);
         setLoading(false);
       }).catch((err) => {
       console.error("Error:", err);
       });
     };
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const handleEditClick = (memberId, memberRole) => {
     setEditingMemberId(memberId);
@@ -43,13 +49,11 @@ export default function AuthorityManagement() {
   const handleSaveClick = async (memberId, selectedRoleForEditMember) => {
     setPendding(true);
     await fetcher.patch(ROLE_UPDATE_API, {
-      memberId: memberId,
-      memberRole: selectedRoleForEditMember
+      id: memberId,
+      userRole: selectedRoleForEditMember
     }).then(() => {
-      fetcher.get(ROLE_API).then((res) => {
-        setMembers(Object.assign([], res.data.members));
-        setAuthorities(res.data.authorities);
-      }).then(() =>{
+      fetcher.get(`${ROLE_API}/${currentPage-1}?itemsPerPage=${ITEMS_PER_PAGE}`).then((res) => {
+        setMembers(Object.assign([], res.data.content));
         setEditingMemberId(null);
         setPendding(false);
       }).catch((err) => {
@@ -125,13 +129,11 @@ export default function AuthorityManagement() {
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          수정
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          삭제
                         </th>
                       </tr>
                     </thead>
@@ -149,10 +151,10 @@ export default function AuthorityManagement() {
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {member.id}
                             </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap text-gray-500">
                               <SelectPermission
                                 authorities={authorities}
-                                initialRole={member.role.type}
+                                initialRole={member.userRole.type}
                                 onChange={(value) =>
                                   setSelectedRoleForEditMember(value)
                                 }
@@ -171,6 +173,14 @@ export default function AuthorityManagement() {
                                 저장
                               </button>
                             </td>
+                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
+                              <button
+                                onClick={() => setEditingMemberId(null)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                취소
+                              </button>
+                            </td>
                           </tr>
                         ) : (
                           <tr key={member.id}>
@@ -182,13 +192,13 @@ export default function AuthorityManagement() {
                             </td>
 
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {member.role.type}
+                              {member.userRole.name}
                             </td>
                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
                               <button
                                 className="text-blue-600 hover:text-blue-900"
                                 onClick={() =>
-                                  handleEditClick(member.id, member.role.type)
+                                  handleEditClick(member.id, member.userRole.type)
                                 } 
                               >
                                 수정
@@ -212,6 +222,11 @@ export default function AuthorityManagement() {
             </div>
           </div>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </Container>
       {isDeleteModalOpen && (<DeleteModal
         id={modalDataId}
