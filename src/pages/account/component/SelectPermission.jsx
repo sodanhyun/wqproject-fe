@@ -14,7 +14,7 @@ export default function SelectPermission({authorities, onChange, initialRole }) 
         id="location"
         value={selectedAuthority}
         onChange={handleChange}
-        className="text-xs h-full w-fit rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 hover:ring-2 focus:ring-2 focus:ring-blue-600"
+        className="text-xs rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 hover:ring-2 focus:ring-2 focus:ring-blue-600"
       >
         {authorities.map((authority, index) => (
           <option key={index} value={authority.type}>
