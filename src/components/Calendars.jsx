@@ -22,7 +22,6 @@ export default function Calendars() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedDay, setSelectedDay] = useState(null);
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [modalDataId, setModalDataId] = useState("");
@@ -414,14 +413,13 @@ export default function Calendars() {
       <ScheduleModal 
       selectedDay={selectedDay} 
       handleDetailClick={handleDetailClick}
-      open={open} 
-      setOpen={setOpen} 
       />
     }
     </div>
   );
 }
-function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
+function ScheduleModal({ selectedDay, handleDetailClick }) {
+  const [open, setOpen] = useState(true)
   
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -450,6 +448,7 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
                     <a onClick={() => {
+                      setOpen(false);
                       handleDetailClick(event.id);
                     }
                     } 
