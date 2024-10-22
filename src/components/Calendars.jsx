@@ -427,7 +427,7 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={setOpen}>
         <div className="flex justify-center items-center min-h-screen text-center sm:block sm:p-0">
-          {/* <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
+          <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
           <Transition.Child
             as={Fragment}
