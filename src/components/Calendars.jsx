@@ -146,6 +146,7 @@ export default function Calendars() {
   };
 
   const handleDetailClick = (lCode) => {
+    setOpen(false);
     setIsDetailModalOpen(true);
     setModalDataId(lCode);
   }
@@ -425,7 +426,7 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
   
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={() => setOpen(false)}>
+      <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={setOpen}>
         <div className="flex justify-center items-center min-h-screen text-center sm:block sm:p-0">
           {/* <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -449,9 +450,8 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
                 <ul className="text-sm text-gray-500">
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
-                    <a onClick={() => {
-                      handleDetailClick(event.id)
-                      setOpen(false)}} 
+                    <a onClick={() => {handleDetailClick(event.id)}
+                    } 
                       className="mt-2 group flex rounded-full cursor-pointer hover:bg-gray-100"
                     >
                       <p
