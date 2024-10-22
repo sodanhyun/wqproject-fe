@@ -146,7 +146,6 @@ export default function Calendars() {
   };
 
   const handleDetailClick = (lCode) => {
-    setOpen(false);
     setIsDetailModalOpen(true);
     setModalDataId(lCode);
   }
@@ -450,7 +449,10 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
                 <ul className="text-sm text-gray-500">
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
-                    <a onClick={() => {handleDetailClick(event.id)}
+                    <a onClick={() => {
+                      setOpen(false);
+                      handleDetailClick(event.id);
+                    }
                     } 
                       className="mt-2 group flex rounded-full cursor-pointer hover:bg-gray-100"
                     >
