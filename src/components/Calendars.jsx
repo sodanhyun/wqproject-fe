@@ -7,13 +7,16 @@ import { useState, useEffect, Fragment } from "react";
 import fetcher from "../fetcher";
 import { LECTURE_LIST_API } from "../constants/api_constants";
 import { Dialog, Transition } from "@headlessui/react";
+import DetailModal from "../pages/lecture/modal/DetailModal";
+import useStore from "../store";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Calendars() {
-  const lectureColors = ["#6B33FF", "#33E0E8", "#FF33B9", "#33A8FF"]; // 강의 컬러
+  const lectureColors = ["#6B33FF", "#FF33B9", "#33A8FF", "#33E0E8"]; // 강의 컬러
+  const { setShowDetailForm } = useStore((state) => state);
   const [lectures, setLectures] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -21,6 +24,9 @@ export default function Calendars() {
   const [selectedDay, setSelectedDay] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [modalDataId, setModalDataId] = useState("");
+  const [listOffset, setListOffset] = useState(1);
 
   useEffect(() => {
     const fetchLectures = async (days) => {
@@ -41,8 +47,7 @@ export default function Calendars() {
                 id: lecture.lcode,
                 name: lecture.title,
                 datetime: sdate.toISOString(),
-                time: `${sdate.getHours()}:${sdate.getMinutes()}`,
-                color: lectureColors[i % lectureColors.length], // 색상 할당
+                time: `${sdate.getHours().toString().length < 2 ? ('0' + sdate.getHours().toString()) : sdate.getHours().toString()}:${sdate.getMinutes().toString().length < 2 ? ('0' + sdate.getMinutes().toString()) : sdate.getMinutes().toString()}`,                color: lectureColors[i % lectureColors.length], // 색상 할당
               });
             }
           }
@@ -113,6 +118,7 @@ export default function Calendars() {
 
   // 이전 월로 이동하는 함수
   const previousMonth = () => {
+    setListOffset(1);
     if (currentMonth === 0) {
       setCurrentMonth(11);
       setCurrentYear((prevYear) => prevYear - 1);
@@ -123,6 +129,7 @@ export default function Calendars() {
 
   // 다음 월로 이동하는 함수
   const nextMonth = () => {
+    setListOffset(1);
     if (currentMonth === 11) {
       setCurrentMonth(0);
       setCurrentYear((prevYear) => prevYear + 1);
@@ -136,6 +143,11 @@ export default function Calendars() {
     setSelectedDay(day);
     setOpen(true);
   };
+
+  const handleDetailClick = (lCode) => {
+    setIsDetailModalOpen(true);
+    setModalDataId(lCode);
+  }
 
   return (
     <div className="lg:flex lg:h-full lg:flex-col">
@@ -235,16 +247,16 @@ export default function Calendars() {
                   <ol className="mt-2">
                     {day.events.slice(0, 2).map((event) => (
                       <li key={event.id}>
-                        <a href={event.href} className="group flex">
+                        <a onClick={() => handleDetailClick(event.id)} className="group flex rounded-full cursor-pointer hover:bg-gray-100">
                           <p
-                            className="flex-auto truncate font-medium text-gray-900 group-hover:text-blue-600"
+                            className="ml-2 flex-auto truncate font-medium text-gray-900 group-hover:text-blue-600"
                             style={{ color: event.color }} // 색상 적용
                           >
                             {event.name}
                           </p>
                           <time
                             dateTime={event.datetime}
-                            className="ml-3 hidden flex-none text-gray-500 group-hover:text-blue-600 xl:block"
+                            className="mr-2 hidden flex-none text-gray-500 group-hover:text-blue-600 xl:block"
                           >
                             {event.time}
                           </time>
@@ -269,6 +281,7 @@ export default function Calendars() {
               <button
                 key={day.date}
                 type="button"
+                onClick={() => showMoreEvents(day)}
                 className={classNames(
                   day.isCurrentMonth ? "bg-white" : "bg-gray-50",
                   (day.isSelected || day.isToday) && "font-semibold",
@@ -300,7 +313,7 @@ export default function Calendars() {
                 <span className="sr-only">{day.events.length} events</span>
                 {day.events.length > 0 && (
                   <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
-                    {day.events.map((event) => (
+                    {day.events.slice(0, 6).map((event) => (
                       <span
                         key={event.id}
                         className="mx-0.5 mb-1 h-1.5 w-1.5 rounded-full bg-gray-400"
@@ -314,10 +327,10 @@ export default function Calendars() {
         </div>
       </div>}
 
-      {lectures.length > 0 && (
+      
         <div className="px-4 py-10 sm:px-6">
           <ol className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5">
-            {lectures
+            {lectures.length > 0 ? (lectures
               .filter((lecture) => {
                 const lectureStartMonth = new Date(lecture.sdate).getMonth();
                 const lectureEndMonth = new Date(lecture.edate).getMonth();
@@ -326,9 +339,12 @@ export default function Calendars() {
                   lectureEndMonth >= currentMonth
                 );
               })
+              .sort((l1, l2) => l1.sdate < l2.sdate ? -1 : 1)
+              .slice(0, listOffset*5)
               .map((lecture) => (
                 <li
                   key={lecture.lcode}
+                  onClick={() => handleDetailClick(lecture.lcode)}
                   className="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50"
                 >
                   <div className="flex-auto">
@@ -358,22 +374,59 @@ export default function Calendars() {
                     </time>
                   </div>
                 </li>
-              ))}
+              ))) : (
+                <div>
+                  <li className="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
+                    <div className="flex-auto">
+                      <p className="font-semibold text-gray-400">
+                        해당 달에 등록된 강의가 없습니다.
+                      </p>
+                    </div>
+                  </li>
+                </div>
+              )}
           </ol>
+          {lectures.filter((lecture) => {
+            const lectureStartMonth = new Date(lecture.sdate).getMonth();
+            const lectureEndMonth = new Date(lecture.edate).getMonth();
+            return (
+              lectureStartMonth <= currentMonth &&
+              lectureEndMonth >= currentMonth
+            );
+          }).length > listOffset*5  && <button 
+            className="mt-2 text-blue-500"
+            onClick={() => setListOffset(listOffset+1)}
+            >더보기
+          </button>}
         </div>
-      )}
     {/*  more 버튼 클릭시 모달 */}
-    {selectedDay && <ScheduleModal selectedDay={selectedDay} setSelectedDay={setSelectedDay} open={open} setOpen={setOpen} />}
+    {isDetailModalOpen && (
+      <DetailModal
+        lCode={modalDataId}
+        onClose={() => {
+          setShowDetailForm(true);
+          setIsDetailModalOpen(false);
+        }}
+      />
+    )}
+    {selectedDay && 
+      <ScheduleModal 
+      selectedDay={selectedDay} 
+      handleDetailClick={handleDetailClick}
+      open={open} 
+      setOpen={setOpen} 
+      />
+    }
     </div>
   );
 }
-function ScheduleModal({ selectedDay, setSelectedDay, open, setOpen }) {
+function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
   
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={() => setOpen(false)}>
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        <div className="flex justify-center items-center min-h-screen text-center sm:block sm:p-0">
+          {/* <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
           <Transition.Child
             as={Fragment}
@@ -382,30 +435,42 @@ function ScheduleModal({ selectedDay, setSelectedDay, open, setOpen }) {
             enterTo="opacity-100 translate-y-0 sm:scale-100"
             leave="ease-in duration-200"
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            leaveTo="opacity-0 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-              <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                {selectedDay.date}
-              </Dialog.Title>
-              <div className="mt-2">
+            <div className="pt-3 ring-slate-200 ring-1 inline-block lg:w-1/6 w-1/2 bg-white rounded-lg text-left overflow-hidden shadow-2xl transform transition-all align-middle max-w-lg px-6">
+            <div className="flex items-center justify-end">
+              <button onClick={() => setOpen(false)} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
+            </div>
+              <div>
+                <Dialog.Title as="h3" className="text-center text-lg leading-6 font-medium text-gray-900">
+                  {`${selectedDay.date.split('-')[1]}월 ${selectedDay.date.split('-')[2]}일`}
+                </Dialog.Title>
                 <ul className="text-sm text-gray-500">
                   {selectedDay.events.map((event) => (
-                    <li key={event.id}>{event.name}</li>
+                    <li key={event.id}>
+                    <a onClick={() => {
+                      handleDetailClick(event.id)
+                      setOpen(false)}} 
+                      className="mt-2 group flex rounded-full cursor-pointer hover:bg-gray-100"
+                    >
+                      <p
+                        className="truncate ml-2 flex-auto font-medium text-gray-900 group-hover:text-blue-600"
+                        style={{ color: event.color }} // 색상 적용
+                      >
+                        {event.name}
+                      </p>
+                      <time
+                        dateTime={event.datetime}
+                        className="ml-2 mr-2 flex-none text-gray-500 group-hover:text-blue-600 xl:block"
+                      >
+                        {event.time}
+                      </time>
+                    </a>
+                  </li>
                   ))}
                 </ul>
               </div>
               <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                  onClick={() => {
-                    setOpen(false);
-                    setSelectedDay(null);
-                  }}
-                >
-                  Close
-                </button>
               </div>
             </div>
           </Transition.Child>

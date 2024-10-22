@@ -88,8 +88,8 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     setPendding(true);
     fetcher.patch(`${LECTURE_HANDLE_API}/${lCode}`, formData).then(() => {
       setShowDetailForm(true);
-      fetchLectureData();
-    }).error((err) => {
+      fetchLectureData && fetchLectureData();
+    }).catch((err) => {
       setPendding(false);
     });
   };
@@ -97,7 +97,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       {pendding && 
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
       </div>
       }

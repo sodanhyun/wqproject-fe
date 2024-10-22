@@ -56,7 +56,7 @@ export function Header() {
             {userRole === ADMIN && (
               <Link to={AUTH_MANAGEMENT_COMPONENT}>
                 <Button color="blue">
-                  <span>권한관리</span>
+                  <span>계정관리</span>
                 </Button>
               </Link>
             )}

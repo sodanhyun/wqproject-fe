@@ -138,8 +138,14 @@ const LectureList = () => {
                     <input
                       value={keyword}
                       onChange={(e) => setKeyword(e.target.value)}
+                      onKeyDown={(e) => {
+                        if(e.key === 'Enter') {
+                          e.preventDefault();
+                          searchLectureData();
+                        }
+                      }}
                       id="search-field"
-                      className="hover:bg-gray-100 focus:bg-gray-100 rounded-3xl block h-full w-full border-0 bg-transparent pl-8 pr-0 text-gray-900 focus:ring-0 sm:text-sm"
+                      className="hover:bg-gray-100 focus:bg-gray-100 rounded-3xl block h-full w-full border-0 bg-transparent pl-8 text-gray-900 focus:ring-0 sm:text-sm"
                       placeholder="강의 검색"
                       type="search"
                       name="keyword"
@@ -282,7 +288,6 @@ const LectureList = () => {
         {isDetailModalOpen && (
           <DetailModal
             lCode={modalDataId}
-            fetchLectureData={fetchLectureData}
             onClose={() => {
               setShowDetailForm(true);
               setIsDetailModalOpen(false);
