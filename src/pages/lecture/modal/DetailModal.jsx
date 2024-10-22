@@ -11,7 +11,7 @@ const DetailModal = ({lCode, onClose}) => {
 
   return (
       <Transition.Root show={open} as={Fragment}>
-        <Dialog className="relative z-101" initialFocus={cancelButtonRef} onClose={setOpen}>
+        <Dialog className="relative z-100" initialFocus={cancelButtonRef} onClose={setOpen}>
           <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
