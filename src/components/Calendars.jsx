@@ -30,6 +30,7 @@ export default function Calendars() {
 
   useEffect(() => {
     const fetchLectures = async (days) => {
+      setLoading(true);
       const url = `${LECTURE_LIST_API}?date=${convertDateFormat(new Date(currentYear, currentMonth))}`;
       await fetcher.get(url).then((res) => {
         setLectures(res.data);
