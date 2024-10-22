@@ -412,18 +412,19 @@ export default function Calendars() {
     {selectedDay && 
       <ScheduleModal 
       selectedDay={selectedDay} 
+      setSelectedDay={setSelectedDay}
       handleDetailClick={handleDetailClick}
       />
     }
     </div>
   );
 }
-function ScheduleModal({ selectedDay, handleDetailClick }) {
+function ScheduleModal({ selectedDay, setSelectedDay, handleDetailClick }) {
   const [open, setOpen] = useState(true)
   
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={setOpen}>
+      <Dialog as="div" className="fixed inset-0 z-100 overflow-y-auto" onClose={() => {setOpen(false); setSelectedDay(null);}}>
         <div className="flex justify-center items-center min-h-screen text-center sm:block sm:p-0">
           <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -438,7 +439,7 @@ function ScheduleModal({ selectedDay, handleDetailClick }) {
           >
             <div className="pt-3 ring-slate-200 ring-1 inline-block lg:w-1/6 w-1/2 bg-white rounded-lg text-left overflow-hidden shadow-2xl transform transition-all align-middle max-w-lg px-6">
             <div className="flex items-center justify-end">
-              <button onClick={() => setOpen(false)} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
+              <button onClick={() => {setOpen(false); setSelectedDay(null);}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
             </div>
               <div>
                 <Dialog.Title as="h3" className="text-center text-lg leading-6 font-medium text-gray-900">
@@ -448,6 +449,8 @@ function ScheduleModal({ selectedDay, handleDetailClick }) {
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
                     <a onClick={() => {
+                      setOpen(false);
+                      setSelectedDay(null);
                       handleDetailClick(event.id);
                     }
                     } 
