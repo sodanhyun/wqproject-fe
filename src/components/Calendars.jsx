@@ -450,7 +450,6 @@ function ScheduleModal({ selectedDay, handleDetailClick, open, setOpen }) {
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
                     <a onClick={() => {
-                      setOpen(false);
                       handleDetailClick(event.id);
                     }
                     } 
