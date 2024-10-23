@@ -230,7 +230,7 @@ const LectureList = () => {
                           <div className="flex justify-end ssm:flex-col">
                             <button
                               type="button"
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:mt-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 sm:text-xs"
                             >
                               <Link to={`/liveQuestions/${data.lcode}`}>
                                 질문리스트
@@ -238,7 +238,7 @@ const LectureList = () => {
                             </button>
                             <button
                               type="button"
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:my-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 sm:text-xs"
                             >
                               <Link to={`/pickQuestions/${data.lcode}`}>
                                 답변리스트
@@ -247,14 +247,14 @@ const LectureList = () => {
                             <button
                               type="button"
                               onClick={() => handleDetailClick(data.lcode)}
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 ssm:mb-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2 sm:text-xs"
                             >
                               상세
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteClick(data.lcode)}
-                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 mr-2"
+                              className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 hover:ring-gray-400 sm:text-xs mr-2"
                             >
                               삭제
                             </button>

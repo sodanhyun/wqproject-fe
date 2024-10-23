@@ -295,7 +295,7 @@ export default function Calendars() {
                     !day.isCurrentMonth &&
                     !day.isToday &&
                     "text-gray-500",
-                  "flex h-14 flex-col px-3 py-2 hover:bg-gray-100 focus:z-10"
+                  "flex h-14 flex-col px-2 py-2 hover:bg-gray-100 focus:z-10"
                 )}
               >
                 <time

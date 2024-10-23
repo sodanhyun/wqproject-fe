@@ -100,7 +100,7 @@ const LectureQR = () => {
               {lectureDetails && (
                 <h2
                   id="faq-title"
-                  className=" font-extrabold text-9xl lg:text-7xl mid:text-3xl ssm:text-2xl tracking-tight text-slate-900 my-10 text-center "
+                  className=" font-extrabold text-9xl lg:text-7xl mid:text-3xl sm:text-2xl tracking-tight text-slate-900 my-10 text-center "
                 >
                   {lectureDetails.title}
                 </h2>
