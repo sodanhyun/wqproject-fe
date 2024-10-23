@@ -36,18 +36,18 @@ const LectureDetail = ({ lCode, onClose }) => {
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
-      <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-1 px-4">
-          <div className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2 px-4 py-6 sm:p-8">
-            <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+      <div className="grid grid-cols-1 gap-y-2 px-2 py-2">
+          <div className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl px-2 py-2">
+            <div className="grid max-w-2xl grid-cols-1 gap-y-2 lg:gap-y-6">
               <div className="col-span-full">
                 <label
                   htmlFor="Topic"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   강의제목
                 </label>
                 <div className="mt-2">
-                  <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 text-center">
+                  <h1 className="lg:text-3xl sm:text-lg font-normal leading-tight tracking-tight text-gray-900 text-center">
                     {lectureData.title}
                   </h1>
                 </div>
@@ -55,7 +55,7 @@ const LectureDetail = ({ lCode, onClose }) => {
 
               <div className="col-span-full">
                 {noImage ? (
-                  <p>첨부된 파일이 없습니다.</p>
+                  <p className="lg:text-lg text-sm  text-gray-400">첨부된 이미지 없음</p>
                 ) : (
                   <img 
                   src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
@@ -67,72 +67,72 @@ const LectureDetail = ({ lCode, onClose }) => {
               <div className="col-span-full">
                 <label
                   htmlFor="Title"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black  leading-6 "
                 >
                   강연자
                 </label>
                 <div className="mt-2">
-                  <p>{lectureData.speaker}</p>
+                  <p className="lg:text-lg text-sm font-normal text-gray-900">{lectureData.speaker}</p>
                 </div>
               </div>
 
               <div className="col-span-full">
-                <span className="block text-sm font-medium leading-6 text-gray-900">
+                <span className="block text-sm font-black leading-6">
                   강의시간
                 </span>
                 <div className="mt-2 flex flex-col">
-                  <p>{getFormattedDate(lectureData.sdate)}</p>~<p>{getFormattedDate(lectureData.edate)}</p>
+                  <p className="lg:text-lg text-sm font-normal text-gray-900">{getFormattedDate(lectureData.sdate)}</p>~<p className="lg:text-lg text-sm font-normal">{getFormattedDate(lectureData.edate)}</p>
                 </div>
               </div>
 
               <div className="col-span-full">
                 <label
                   htmlFor="Place"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   강의장소
                 </label>
                 <div className="mt-2">
-                  <p>{lectureData.location}</p>
+                  <p className="lg:text-lg text-sm font-normal text-gray-900">{lectureData.location}</p>
                 </div>
               </div>
 
               <div className="col-span-full">
                 <label
                   htmlFor="ETC"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   질문 제한시간
                 </label>
                 <div className="mt-2">
-                  <p>{lectureData.limitMin}분</p>
+                  <p className="lg:text-lg text-sm font-normal text-gray-900">{lectureData.limitMin}분</p>
                 </div>
               </div>
               <div className="col-span-full">
                 <label
                   htmlFor="ETC"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   기타사항
                 </label>
                 <div className="mt-2">
-                  <p>{lectureData.etc}</p>
+                  <p className="break-words lg:text-lg text-sm font-normal text-gray-900">{lectureData.etc}</p>
                 </div>
               </div>
 
             </div>
           </div>
-        <div className="mb-3 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+        <div className="lg:mt-1 grid grid-cols-2 grid-flow-row-dense gap-2 lg:gap-4">
           <button
             type="button"
-            className="inline-flex w-full justify-center rounded-md bg-blue-600 border px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:col-start-2"
+            className="inline-flex w-full py-1 lg:py-2 justify-center rounded-md bg-blue-600 border text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:col-start-2"
             onClick={() => setShowDetailForm(false)}
           >
             수정
           </button>
           <button
             type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+            className="inline-flex w-full py-1 lg:py-2 justify-center rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1"
             onClick={onClose}
           >
             닫기

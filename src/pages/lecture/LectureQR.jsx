@@ -16,6 +16,21 @@ const LectureQR = () => {
   const [lCode, setLCode] = useState(null);
   const [lectureDetails, setLectureDetails] = useState(null);
   const [noImage, setNoImage] = useState(false);
+  const [qrSize, setQrSize] = useState(700);
+
+  const updateQrSize = () => {
+    const newSize = Math.min(window.innerWidth * 0.3, 700); // 화면의 80% 또는 최대 700
+    setQrSize(newSize);
+    console.log(newSize)
+  };
+
+  useEffect(() => {
+    updateQrSize();
+    window.addEventListener('resize', updateQrSize);
+    return () => {
+      window.removeEventListener('resize', updateQrSize); // 컴포넌트 언마운트 시 리스너 제거
+    };
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -30,6 +45,11 @@ const LectureQR = () => {
     }
     fetchData();
   }, [lCode]);
+
+  const onSelected = (lcode) => {
+    setLCode(lcode);
+    setNoImage(false);
+  }
 
   const handleToggle = async (newActiveState) => {
     await fetcher.patch(QRACTIVE_API, {
@@ -71,16 +91,16 @@ const LectureQR = () => {
         <div className="relative mx-24">
           <div className="mx-auto">
             <div className="flex justify-center">
-              <LectureSelect onSelected={setLCode} />
+              <LectureSelect onSelected={onSelected} />
             </div>
             <div className="flex justify-end">
-              {lCode && (<LectureToggle onToggle={handleToggle}/>)}
+              {lCode && (<LectureToggle onToggle={handleToggle} isActive={isActive}/>)}
             </div>
             <div>
               {lectureDetails && (
                 <h2
                   id="faq-title"
-                  className=" font-extrabold text-9xl tracking-tight text-slate-900 my-10 text-center "
+                  className=" font-extrabold text-9xl lg:text-7xl mid:text-3xl ssm:text-2xl tracking-tight text-slate-900 my-10 text-center "
                 >
                   {lectureDetails.title}
                 </h2>
@@ -92,68 +112,67 @@ const LectureQR = () => {
                   key={lectureDetails.id}
                   className="mt-4 text-lg tracking-tight text-slate-700 w-full"
                 >
-                  <div className="flex justify-between w-full">
-                    <div className=" flex items-center bg-slate-100 w-[400px]">
-                      {noImage ? <img
-                        src={baseImage}
-                        className="mb-4 w-[400px]"
-                      /> : <img
+                  <div className="grid grid-cols-10">
+                    <div className="flex items-center col-span-2 sm:hidden">
+                      {!noImage && <img
                         src={VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}`}
-                        className="mb-4 w-[400px]"
+                        className="mb-4"
                         onError={() => {setNoImage(true)}}
                       />}
                     </div>
-                  <div className="ml-16 max-w-5xl">
-                    <p className=" text-5xl my-10">
-                      <span className="font-extrabold text-5xl mr-3">
-                        강사 :
-                      </span>
-                      {lectureDetails.speaker}
-                    </p>
-
-                    <p className=" text-5xl mb-6">
-                      <span className="font-extrabold text-5xl mr-3">
-                        시작 :
-                      </span>
-                      {getFormattedDate(lectureDetails.sdate)}
-                    </p>
-                    <p className=" text-5xl mb-6 my-10">
-                      <span className="font-extrabold text-5xl mr-3">
-                        종료 :
-                      </span>
-                      {getFormattedDate(lectureDetails.edate)}
-                    </p>
-
-                    <p className=" text-5xl mb-6 my-10 leading-normal">
-                      <span className="font-extrabold text-5xl mr-3">
-                        장소 :
-                      </span>
-                      {lectureDetails.location}
-                    </p>
-
-                    <p className=" text-5xl my-10 leading-normal">
-                      <span className="font-extrabold text-5xl mr-3">
-                        기타 :
-                      </span>
-                      {lectureDetails.etc}
-                    </p>
-                  </div>
-              <div className="ml-5 flex-shrink-0 flex items-center">
-                {lCode && (
-                  <>
-                    {isActive && (
-                      <div className="mt-4">
-                        <QrCode
-                          value={`${VITE_REACT_APP_API_FRONT_URL}/social/${lCode}`}
-                          size={800}
-                          style={{ width: "800px", height: "auto" }}
-                        />
+                    <div className="flex col-span-4 items-center justify-center sm:hidden rounded-xl bg-blue-100 ">
+                      <div className="h-fit w-fit grid-cols-1 grid-rows-5 p-5">
+                        <p className="xl:text-6xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                            강사
+                          </span>
+                          {lectureDetails.speaker}
+                        </p>
+                        <p className="xl:text-5xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                            시작
+                          </span>
+                          {getFormattedDate(lectureDetails.sdate)}
+                        </p>
+                        <p className="xl:text-5xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                            종료
+                          </span>
+                          {getFormattedDate(lectureDetails.edate)}
+                        </p>
+                        <p className="xl:text-6xl mid:text-xl lg:text-3xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                            장소
+                          </span>
+                          {lectureDetails.location}
+                        </p>
+                        {lectureDetails.etc &&
+                        <p className="max-w-3xl break-words xl:text-5xl lg:hidden mid:hidden sm:hidden m-2">
+                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                            기타
+                          </span>
+                          {lectureDetails.etc}
+                        </p>}
                       </div>
-                    )}
-                  </>
-                )}
-              </div>
-                </div>
+                    </div>
+                    <div className="flex col-span-4 justify-center sm:col-span-10">
+                      {lCode && (
+                        <>
+                          {isActive && (
+                            <div>
+                              <div className="flex justify-center">
+                                <QrCode
+                                  value={`${VITE_REACT_APP_API_FRONT_URL}/social/${lCode}`}
+                                  size={qrSize}
+                                />
+                              </div>
+                              <p className="text-center font-bold mt-2 text-3xl mid:text-xl sm:text-sm">QR로 접속해서 궁금한 점을 질문하세요!</p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

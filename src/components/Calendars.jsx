@@ -175,7 +175,7 @@ export default function Calendars() {
             </button>
             <button
               type="button"
-              className="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
+              className="block sm:hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative"
               onClick={() => {
                 // 클릭 이벤트 핸들러 추가
                 const today = new Date();
@@ -224,7 +224,7 @@ export default function Calendars() {
           </div>
         </div>
         <div className="flex  bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-          <div className={`hidden w-full lg:grid lg:grid-cols-7 ${filteredLectures.length > 35 ? 'lg:grid-rows-6' : 'lg:grid-rows-5'} lg:gap-px`}>
+          <div className={`sm:hidden w-full grid grid-cols-7 ${filteredLectures.length > 35 ? 'grid-rows-6' : 'grid-rows-5'} gap-px`}>
             {filteredLectures.map((day) => (
               <div
                 key={day.date}
@@ -256,7 +256,7 @@ export default function Calendars() {
                           </p>
                           <time
                             dateTime={event.datetime}
-                            className="mr-2 hidden flex-none text-gray-500 group-hover:text-blue-600 xl:block"
+                            className="mr-2 sm:hidden flex-none text-gray-500 group-hover:text-blue-600 block"
                           >
                             {event.time}
                           </time>
@@ -276,7 +276,7 @@ export default function Calendars() {
               </div>
             ))}
           </div>
-          <div className={`isolate grid w-full grid-cols-7 ${filteredLectures.length > 35 ? 'lg:grid-rows-6' : 'lg:grid-rows-5'} gap-px lg:hidden`}>
+          <div className={`hidden isolate sm:grid w-full grid-cols-7 ${filteredLectures.length > 35 ? 'lg:grid-rows-6' : 'lg:grid-rows-5'} gap-px`}>
             {filteredLectures.map((day) => (
               <button
                 key={day.date}
@@ -300,13 +300,11 @@ export default function Calendars() {
               >
                 <time
                   dateTime={day.date}
-                  className={classNames(
-                    day.isSelected &&
-                      "flex h-6 w-6 items-center justify-center rounded-full",
-                    day.isSelected && day.isToday && "bg-blue-600",
-                    day.isSelected && !day.isToday && "bg-gray-900",
-                    "ml-auto"
-                  )}
+                  className={
+                    day.date === new Date().toISOString().split("T")[0]
+                      ? "flex h-5 w-5 mb-1 items-center justify-center rounded-full bg-blue-600 font-semibold text-white" // 오늘이면 동그라미로 표시
+                      : undefined
+                  }
                 >
                   {day.date.split("-").pop().replace(/^0/, "")}
                 </time>
@@ -394,7 +392,7 @@ export default function Calendars() {
               lectureEndMonth >= currentMonth
             );
           }).length > listOffset*5  && <button 
-            className="mt-2 text-blue-500"
+            className="mt-2 text-blue-500 hover:brightness-75"
             onClick={() => setListOffset(listOffset+1)}
             >더보기
           </button>}
@@ -437,7 +435,7 @@ function ScheduleModal({ selectedDay, setSelectedDay, handleDetailClick }) {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 sm:translate-y-0 sm:scale-95"
           >
-            <div className="pt-3 ring-slate-200 ring-1 inline-block lg:w-1/6 w-1/2 bg-white rounded-lg text-left overflow-hidden shadow-2xl transform transition-all align-middle max-w-lg px-6">
+            <div className="pt-3 ring-slate-200 ring-1 inline-block sm:w-1/2 md:w-1/3 lg:w-1/4 m-5 xl:w-1/6 bg-white rounded-lg text-left overflow-hidden shadow-2xl transform transition-all align-middle max-w-lg px-6">
             <div className="flex items-center justify-end">
               <button onClick={() => {setOpen(false); setSelectedDay(null);}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
             </div>

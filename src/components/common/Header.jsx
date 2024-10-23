@@ -41,7 +41,7 @@ export function Header() {
             <LogoLink href="/" aria-label="Home">
               <img src={NEWLOGO} className="w-40"></img>
             </LogoLink>
-            <div className="hidden md:flex md:gap-x-6">
+            <div className="flex gap-x-6 sm:hidden">
               {LinkData.map((data, index) => (
                 <NavLink key={index} href={data.href}>
                   {data.menuName}
@@ -49,8 +49,8 @@ export function Header() {
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-x-5 md:gap-x-8">
-            <div className="hidden md:block">
+          <div className="flex items-center gap-x-5">
+            <div className="block sm:hidden">
               <LogoutLink>로그아웃</LogoutLink>
             </div>
             {userRole === ADMIN && (
@@ -60,7 +60,7 @@ export function Header() {
                 </Button>
               </Link>
             )}
-            <div className="-mr-1 md:hidden">
+            <div className="hidden mr-1 sm:block">
               <MobileNavigation />
             </div>
           </div>

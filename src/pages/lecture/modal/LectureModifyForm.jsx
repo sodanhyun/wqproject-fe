@@ -25,6 +25,43 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const [imgFile, setImgFile] = useState("");
   const [loading, setLoading] = useState(true);
   const [pendding, setPendding] = useState(false);
+  const [validErr, setValidErr] = useState(false);
+
+  const validateReq = () => {
+    if (!reqData.title || !reqData.speaker || !reqData.sdate || !reqData.edate || !reqData.location || !reqData.limitMin) {
+      toast.error("필수 항목을 모두 입력해주세요", {
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      if(!validErr) setValidErr(true);
+      return false;
+    }
+    if (reqData.edate <= reqData.sdate) {
+      toast.error("강의 종료 날짜는 강의 시작 날짜보다 이후여야 합니다.", {
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      if(!validErr) setValidErr(true);
+      return false;
+    }
+    if(reqData.etc.length > 200) {
+      toast.warn("기타는 최대 200자까지 입력 가능합니다.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+      if(!validErr) setValidErr(true);
+      return false;
+    }
+    setValidErr(false);
+    return true;
+  }
 
   useEffect(() => {
     const fetchLectureInfo = async () => {
@@ -55,20 +92,6 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     setReqData({ ...reqData, [name]: value});
   };
 
-  const onEtcChange = (e) => {
-    const {value, name} = e.target;
-    if (value.length > 250) {
-      toast.warn("기타는 최대 250자까지 입력 가능합니다.", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
-      setReqData({ ...reqData, [name]: value.slice(0, 250)});
-    } else {
-      setReqData({ ...reqData, [name]: value});
-    }
-  }; 
-
   const saveImgFile = () => {
     const file = imgRef.current.files[0];
     const reader = new FileReader();
@@ -81,6 +104,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   };
 
   const modifyLecture = () => {
+    if(!validateReq()) return;
     const formData = new FormData();
     formData.append("data",
       new Blob([JSON.stringify(reqData)], { type: "application/json" }));
@@ -102,17 +126,17 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
       </div>
       }
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
-      <div className="grid grid-cols-1 gap-y-8 md:grid-cols-1 px-4">
+      <div className="grid grid-cols-1 gap-y-2 px-2 py-2">
         <form
-          className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl md:col-span-2"
+          className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl px-2 py-2"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="px-4 py-6 sm:p-8">
-            <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-3">
+          <div className="px-4 py-4">
+            <div className="grid max-w-2xl grid-cols-6 gap-y-2 gap-x-3 lg:gap-y-6">
+              <div className="col-span-3">
                 <label
                   htmlFor="Topic"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   강의제목
                 </label>
@@ -124,15 +148,15 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="title"
                     id="Topic"
                     autoComplete="given-name"
-                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className={`${(validErr && !reqData.title) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6`}
                   />
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-3">
                 <label
                   htmlFor="Title"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   강연자
                 </label>
@@ -144,20 +168,20 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="speaker"
                     id="Title"
                     autoComplete="family-name"
-                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className={`${(validErr && !reqData.speaker) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6`}
                   />
                 </div>
               </div>
 
-              <div className="sm:col-span-6">
-                <span className="block text-sm font-medium leading-6 text-gray-900">
+              <div className="col-span-6">
+                <span className="block text-sm font-black leading-6">
                   강의시간
                 </span>
                 <div className="mt-2">
                   <div>
                     <label
                       htmlFor="starttimepicker"
-                      className="inline-block text-sm font-medium leading-6 text-gray-900">
+                      className="block text-sm font-black leading-6">
                       시작
                       <input
                         value={reqData.sdate}
@@ -165,7 +189,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                         name="sdate"
                         type="datetime-local"
                         id="starttimepicker"
-                        className="hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        className={`${(validErr && (!reqData.sdate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5`}
                         min={new Date().toISOString().slice(0, 16)}
                       />
                     </label>
@@ -173,7 +197,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                   <div className="mt-3">
                     <label
                       htmlFor="endtimepicker"
-                      className="inline-block text-sm font-medium leading-6 text-gray-900">
+                      className="block text-sm font-black leading-6">
                       종료
                       <input
                         value={reqData.edate}
@@ -181,7 +205,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                         name="edate"
                         type="datetime-local"
                         id="endtimepicker"
-                        className="hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5"
+                        className={`${(validErr && (!reqData.edate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 ml-2 inline-block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-seahColor sm:text-sm sm:leading-6 px-1.5`}
                         min={new Date().toISOString().slice(0, 16)}
                       />
                     </label>
@@ -189,10 +213,10 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                 </div>
               </div>
 
-              <div className="sm:col-span-6">
+              <div className="col-span-6">
                 <label
                   htmlFor="Place"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   강의장소
                 </label>
@@ -204,7 +228,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     name="location"
                     id="Place"
                     autoComplete="family-name"
-                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className={`${(validErr && !reqData.location) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6`}
                   />
                 </div>
               </div>
@@ -212,7 +236,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
               <div className="col-span-full">
                 <label
                   htmlFor="ETC"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   질문 제한시간(분)
                 </label>
@@ -225,31 +249,31 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     onChange={onChangeHandler}
                     value={reqData.limitMin}
                     autoComplete="family-name"
-                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                    className={`${(validErr && !reqData.limitMin) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6`}
                   />
                 </div>
               </div>
               <div className="col-span-full">
                 <label
                   htmlFor="ETC"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-black leading-6"
                 >
                   기타사항
                 </label>
                 <div className="mt-2">
                   <textarea
                     value={reqData.etc}
-                    onChange={onEtcChange}
+                    onChange={onChangeHandler}
                     type="text-area"
-                    name="ETC"
+                    name="etc"
                     id="ETC"
                     autoComplete="street-address"
-                    className="hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-yellow-500 sm:text-sm sm:leading-6"
+                    className={`${(validErr && reqData.etc.length > 200) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6`}
                   ></textarea>
                 </div>
               </div>
 
-              <div className="sm:col-span-6">
+              <div className="col-span-6">
                 <label
                   htmlFor="lectureImg"
                   className="cursor-pointer group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
@@ -279,17 +303,17 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
           </div>
         </form>
 
-        <div className="mb-3 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+        <div className="lg:mt-1 grid grid-cols-2 grid-flow-row-dense gap-2 lg:gap-4">
           <button
             type="button"
-            className="inline-flex w-full justify-center rounded-md bg-blue-600 border px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:col-start-2"
+            className="inline-flex w-full py-1 lg:py-2 justify-center rounded-md bg-blue-600 border text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:col-start-2"
             onClick={() => modifyLecture(lCode)}
           >
             저장
           </button>
           <button
             type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+            className="inline-flex w-full py-1 lg:py-2 justify-center rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1"
             onClick={() => setShowDetailForm(true)}
           >
             취소
