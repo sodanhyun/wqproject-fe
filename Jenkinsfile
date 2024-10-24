@@ -61,6 +61,7 @@ pipeline {
                     def isRunning = sh(script: "docker ps -q -f name=fe_wqproject", returnStdout: true).trim()
 
                     if (isRunning) {
+                        sh "docker stop -f fe_wqproject"
                         sh "docker rm -f fe_wqproject"
                     }
 
@@ -101,7 +102,6 @@ pipeline {
                         sh "docker rmi fe_wqproject:latest"
 
                         if(!oldImageId.isEmpty()) {
-                            sh "docker stop ${oldImageId}"
                             sh "docker rmi ${oldImageId}"
                         }
                     }
