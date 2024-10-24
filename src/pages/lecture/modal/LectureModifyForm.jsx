@@ -20,7 +20,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     etc: "",
     limitMin: 0,
   });
-  const [noImage, setNoImage] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const [imgPreview, setImgPreview] = useState(null);
   const [imgFile, setImgFile] = useState("");
   const [loading, setLoading] = useState(true);
@@ -66,6 +66,15 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   useEffect(() => {
     const fetchLectureInfo = async () => {
       await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
+        fetcher.get(VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}?thumbs=Y`, {
+          responseType: 'blob'
+        })
+        .then((img) => {
+          const imgUrl = URL.createObjectURL(img.data);
+          setImageSrc(imgUrl);
+        }).catch((err) => {
+          setImageSrc("");
+        })
         setReqData(res.data);
         setLoading(false);
       });
@@ -288,15 +297,9 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     ref={imgRef}
                   />
                 </label>
-                <div className="mt-2 w-full">
-                  {!noImage ? <img
-                    src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
-                    alt="강의 관련 이미지"
-                    onError={() => {setNoImage(true)}}
-                  /> : imgPreview && <img
-                    src={imgPreview}
-                    alt="강의 관련 이미지"
-                  />}
+                <div className="mt-2 w-full flex justify-center">
+                  {imgPreview ? imgPreview && <img src={imgPreview} alt="업로드 이미지" />
+                  : (imageSrc && <img src={imageSrc} alt="기존 이미지" />)}
                 </div>
               </div>
             </div>

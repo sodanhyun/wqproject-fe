@@ -15,13 +15,19 @@ const LectureQR = () => {
   const [isActive, setIsActive] = useState(false);
   const [lCode, setLCode] = useState(null);
   const [lectureDetails, setLectureDetails] = useState(null);
-  const [noImage, setNoImage] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const [qrSize, setQrSize] = useState(700);
 
   const updateQrSize = () => {
-    const newSize = Math.min(window.innerWidth * 0.3, 700); // 화면의 80% 또는 최대 700
+    let newSize = 0;
+    if(window.innerWidth > 2250) {
+      newSize = Math.min(window.innerWidth * 0.5, 1000);
+    }else if(window.innerWidth > 1920) {
+      newSize = Math.min(window.innerWidth * 0.38, 800);
+    }else {
+      newSize = Math.min(window.innerWidth * 0.3, 700);
+    }
     setQrSize(newSize);
-    console.log(newSize)
   };
 
   useEffect(() => {
@@ -37,6 +43,15 @@ const LectureQR = () => {
       if (!lCode) return;
       await fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`)
       .then((res) => {
+        fetcher.get(VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}`, {
+          responseType: 'blob'
+        })
+        .then((img) => {
+          const imgUrl = URL.createObjectURL(img.data);
+          setImageSrc(imgUrl);
+        }).catch((err) => {
+          setImageSrc("");
+        })
         setLectureDetails(res.data);
         setIsActive(res.data.active);
       }).catch((err) => {
@@ -44,6 +59,11 @@ const LectureQR = () => {
       });
     }
     fetchData();
+    return () => {
+      if (imageSrc) {
+        URL.revokeObjectURL(imageSrc);
+      }
+    };
   }, [lCode]);
 
   const onSelected = (lcode) => {
@@ -113,42 +133,38 @@ const LectureQR = () => {
                   className="mt-4 text-lg tracking-tight text-slate-700 w-full"
                 >
                   <div className="grid grid-cols-10">
-                    <div className="flex items-center col-span-2 sm:hidden">
-                      {!noImage && <img
-                        src={VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}`}
-                        className="mb-4"
-                        onError={() => {setNoImage(true)}}
-                      />}
+                    <div className="flex p-3 items-center col-span-2 sm:hidden">
+                      {imageSrc && <img src={imageSrc} alt="Fetched from API" />}
                     </div>
-                    <div className="flex col-span-4 items-center justify-center sm:hidden rounded-xl bg-blue-100 ">
-                      <div className="h-fit w-fit grid-cols-1 grid-rows-5 p-5">
-                        <p className="xl:text-6xl lg:text-3xl mid:text-xl sm:text-sm m-2">
-                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                    <div className="flex col-span-4 items-center justify-center sm:hidden p-3 ">
+                      <div className="bg-blue-100 rounded-2xl h-fit w-fit grid-cols-1 grid-rows-5 p-3">
+                        <p className="xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm">
                             강사
                           </span>
                           {lectureDetails.speaker}
                         </p>
-                        <p className="xl:text-5xl lg:text-3xl mid:text-xl sm:text-sm m-2">
-                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                        <p className="xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm">
                             시작
                           </span>
                           {getFormattedDate(lectureDetails.sdate)}
                         </p>
-                        <p className="xl:text-5xl lg:text-3xl mid:text-xl sm:text-sm m-2">
-                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                        <p className="xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm">
                             종료
                           </span>
                           {getFormattedDate(lectureDetails.edate)}
                         </p>
-                        <p className="xl:text-6xl mid:text-xl lg:text-3xl sm:text-sm m-2">
-                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                        <p className="xl:text-4xl mid:text-xl lg:text-3xl sm:text-sm m-2">
+                          <span className="font-extrabold mr-5 xl:text-4xl lg:text-3xl mid:text-xl sm:text-sm">
                             장소
                           </span>
                           {lectureDetails.location}
                         </p>
                         {lectureDetails.etc &&
-                        <p className="max-w-3xl break-words xl:text-5xl lg:hidden mid:hidden sm:hidden m-2">
-                          <span className="font-extrabold mr-5 xl:text-7xl lg:text-3xl mid:text-xl sm:text-sm">
+                        <p className="mt-10 max-w-xl break-words xl:text-4xl lg:text-3xl mid:hidden sm:hidden m-2">
+                          <span className="font-extrabold mr-5 xl:text-4xl lg:text-3xl mid:hidden sm:hidden">
                             기타
                           </span>
                           {lectureDetails.etc}

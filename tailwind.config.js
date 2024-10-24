@@ -33,8 +33,8 @@ module.exports = {
       },
       screens :{
         "xl" : {'raw':'(min-width:1920px)'},
-        'lg' : {'raw':'(max-width:1920px) and (min-width:1080px)'},
-        'mid': {'raw':'(max-width:1080px) and (min-width:640px)'},
+        'lg' : {'raw':'(max-width:1920px) and (min-width:1380px)'},
+        'mid': {'raw':'(max-width:1380px) and (min-width:640px)'},
         'md' : {'raw':'(max-width:1080px) and (min-width:640px)'},
         'sm' : {'raw':'(max-width:640px)'}
       },

@@ -10,12 +10,21 @@ const LectureDetail = ({ lCode, onClose }) => {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
   const { setShowDetailForm } = useStore((state) => state);
   const [lectureData, setLectureData] = useState({});
-  const [noImage, setNoImage] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLectureInfo = () => {
       fetcher.get(`${LECTURE_HANDLE_API}/${lCode}`).then((res) => {
+        fetcher.get(VITE_REACT_APP_API_BASE_URL + `${LECTURE_IMAGE_API}/${lCode}?thumbs=Y`, {
+          responseType: 'blob'
+        })
+        .then((img) => {
+          const imgUrl = URL.createObjectURL(img.data);
+          setImageSrc(imgUrl);
+        }).catch((err) => {
+          setImageSrc("");
+        })
         setLectureData(res.data);
         setLoading(false);
       });
@@ -53,15 +62,8 @@ const LectureDetail = ({ lCode, onClose }) => {
                 </div>
               </div>
 
-              <div className="col-span-full">
-                {noImage ? (
-                  <p className="lg:text-lg text-sm  text-gray-400">첨부된 이미지 없음</p>
-                ) : (
-                  <img 
-                  src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`}
-                  alt="Lecture" 
-                  onError={() => {setNoImage(true)}} />
-                )}
+              <div className="col-span-full flex justify-center">
+              {imageSrc && <img src={imageSrc} alt="Fetched from API" />}
               </div>
 
               <div className="col-span-full">
