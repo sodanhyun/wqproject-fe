@@ -36,6 +36,7 @@ export default function Login() {
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
       if(res.data.userRole.type !== ADMIN) {
+        setPendding(false);
         toast.warning("관리자 승인 대기중인 계정입니다.", {
           autoClose: 800,
           hideProgressBar: false,
@@ -127,7 +128,9 @@ export default function Login() {
                 로그인 <span aria-hidden="true">&rarr;</span>
               </span>
             </Button>
-            <SocialLoginLink/>
+            <SocialLoginLink
+              setPendding={setPendding}
+            />
           </div>
         </form>
       </SlimLayout>
