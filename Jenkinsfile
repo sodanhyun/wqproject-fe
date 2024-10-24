@@ -101,6 +101,7 @@ pipeline {
                         sh "docker rmi fe_wqproject:latest"
 
                         if(!oldImageId.isEmpty()) {
+                            sh "docker stop ${oldImageId}"
                             sh "docker rmi ${oldImageId}"
                         }
                     }
