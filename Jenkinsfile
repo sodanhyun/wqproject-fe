@@ -61,7 +61,7 @@ pipeline {
                     def isRunning = sh(script: "docker ps -q -f name=fe_wqproject", returnStdout: true).trim()
 
                     if (isRunning) {
-                        sh "docker stop -f fe_wqproject"
+                        sh "docker stop fe_wqproject"
                         sh "docker rm -f fe_wqproject"
                     }
 
