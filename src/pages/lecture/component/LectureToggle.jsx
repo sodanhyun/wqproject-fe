@@ -22,7 +22,7 @@ export default function LectureToggle({ onToggle, isActive }) {
     <Switch.Group as="div" className="flex justify items-end flex-col mt-3">
       <span className="flex-grow flex flex-col">
         <Switch.Description as="span" className="text-sm text-gray-500 mb-2">
-          {!isActive && `강의를 시작하려면 토글을 켜세요.`}
+          {!isActive && `아래 버튼을 이용해 강의를 활성화하세요.`}
         </Switch.Description>
       </span>
       <span className="relative flex mt-3">

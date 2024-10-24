@@ -66,6 +66,7 @@ const LectureReg = () => {
 
   const registerLecture = async (e) => {
     e.preventDefault();
+    setPendding(true);
     if(!validateReq()) return;
     let data = {...reqData};
     data = { ...data, ["sdate"]: getFormattedDate(reqData.sdate)};

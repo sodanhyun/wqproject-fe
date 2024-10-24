@@ -17,6 +17,8 @@ const LectureQR = () => {
   const [lectureDetails, setLectureDetails] = useState(null);
   const [imageSrc, setImageSrc] = useState("");
   const [qrSize, setQrSize] = useState(700);
+  const [loading, setLoading] = useState(false);
+  const [pendding, setPendding] = useState(false);
 
   const updateQrSize = () => {
     let newSize = 0;
@@ -66,17 +68,23 @@ const LectureQR = () => {
     };
   }, [lCode]);
 
-  const onSelected = (lcode) => {
-    setLCode(lcode);
-    setNoImage(false);
-  }
-
   const handleToggle = async (newActiveState) => {
+    if(newActiveState) { 
+      setLoading(true);
+    }else {
+      setPendding(true);
+    }
+
     await fetcher.patch(QRACTIVE_API, {
       active: newActiveState,
       lCode: lCode
     }).then((res) => {
       setIsActive(newActiveState);
+      if(newActiveState) {
+        setLoading(false);
+      }else {
+        setPendding(false);
+      }
     }).catch((err) => {
       console.error("서버 요청 오류:", err);
     });
@@ -111,7 +119,7 @@ const LectureQR = () => {
         <div className="relative mx-24">
           <div className="mx-auto">
             <div className="flex justify-center">
-              <LectureSelect onSelected={onSelected} />
+              <LectureSelect onSelected={(lcode) => {setLCode(lcode)}} />
             </div>
             <div className="flex justify-end">
               {lCode && (<LectureToggle onToggle={handleToggle} isActive={isActive}/>)}
@@ -126,6 +134,12 @@ const LectureQR = () => {
                 </h2>
               )}
             </div>
+            {pendding && 
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>
+            </div>
+            }
+            {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
             <div className="flex justify-between items-start w-full">
               {lectureDetails && (
                 <div
@@ -191,7 +205,7 @@ const LectureQR = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </div>}
           </div>
         </div>
       </section>

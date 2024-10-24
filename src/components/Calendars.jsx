@@ -140,6 +140,7 @@ export default function Calendars() {
 
   // 모달용
   const showMoreEvents = (day) => {
+    if(day.events.length <= 0) return;
     setSelectedDay(day);
     setOpen(true);
   };
