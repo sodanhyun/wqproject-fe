@@ -3,11 +3,7 @@ import { USER_ROLE } from "../../../constants/localstorage_constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LOGIN_COMPONENT, MAIN_COMPONENT } from "../../../constants/component_constants";
-
-const { VITE_REACT_APP_API_FRONT_URL,
-  VITE_REACT_APP_SUCCESS_REDIRECT_URL,
-  VITE_REACT_APP_FAIL_REDIRECT_URL
- } = import.meta.env;
+import { ADMIN } from "../../../constants/user_role";
 
 const LoginHandeler = () => {
   const navigate = useNavigate();
@@ -26,7 +22,7 @@ const LoginHandeler = () => {
         draggable: true,
       });
       navigate(`/liveQuestions/${lCode}`);
-    }else if(userRole == 'ROLE_ADMIN') {
+    }else if(userRole == ADMIN) {
       toast.success("로그인에 성공했습니다!", {
         autoClose: 800,
         hideProgressBar: false,
