@@ -1,19 +1,49 @@
 import { useEffect } from "react";
 import { USER_ROLE } from "../../../constants/localstorage_constants";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { LOGIN_COMPONENT, MAIN_COMPONENT } from "../../../constants/component_constants";
 
 const { VITE_REACT_APP_API_FRONT_URL,
-  VITE_REACT_APP_SUCCESS_REDIRECT_URL
+  VITE_REACT_APP_SUCCESS_REDIRECT_URL,
+  VITE_REACT_APP_FAIL_REDIRECT_URL
  } = import.meta.env;
 
 const LoginHandeler = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const lCode = localStorage.getItem('lCode');
     const searchParams = new URL(window.location.href).searchParams;
-    localStorage.setItem(USER_ROLE, searchParams.get("authority"));
+    const userRole = searchParams.get("authority");
+    localStorage.setItem(USER_ROLE, userRole);
     if(lCode) {
-      window.location.href = `${VITE_REACT_APP_API_FRONT_URL}/liveQuestions/${lCode}`;
+      toast.success("로그인에 성공했습니다!", {
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      navigate(`/liveQuestions/${lCode}`);
+    }else if(userRole == 'ADMIN') {
+      toast.success("로그인에 성공했습니다!", {
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      navigate(MAIN_COMPONENT);
     }else {
-      window.location.href = VITE_REACT_APP_SUCCESS_REDIRECT_URL;
+      toast.warning("관리자 승인 대기중인 계정입니다.", {
+        autoClose: 800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      navigate(LOGIN_COMPONENT);
     }
   }, []);
 

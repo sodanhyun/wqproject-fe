@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SIGNUP_COMPONENT,
   MAIN_COMPONENT
@@ -12,7 +12,7 @@ import { TextField } from "../../components/common/Fields";
 import { SlimLayout } from "../../components/common/SlimLayout";
 import WqLogo from "/assets/logo/wq2.png"
 import { USER_ID, USER_ROLE, USER_TYPE } from "../../constants/localstorage_constants";
-import { ADMIN } from "../../constants/user_role";
+import { ADMIN, TEMP } from "../../constants/user_role";
 import SocialLoginLink from "./component/SocialLoginLink";
 
 export default function Login() {
@@ -24,6 +24,10 @@ export default function Login() {
     password: "",
   });
   const [pendding, setPendding] = useState(false);
+
+  useEffect(() => {
+    localStorage.clear();
+  }, [])
   
   const onChangeHandler = (e) => {
     const {value, name} = e.target;
@@ -35,7 +39,7 @@ export default function Login() {
     setPendding(true);
     await axios.post(VITE_REACT_APP_API_BASE_URL + LOGIN_API, reqData)
     .then((res) => {
-      if(res.data.userRole.type !== ADMIN) {
+      if(res.data.userRole.type === TEMP) {
         setPendding(false);
         toast.warning("관리자 승인 대기중인 계정입니다.", {
           autoClose: 800,
