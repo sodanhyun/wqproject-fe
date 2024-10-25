@@ -26,7 +26,7 @@ const LoginHandeler = () => {
         draggable: true,
       });
       navigate(`/liveQuestions/${lCode}`);
-    }else if(userRole == 'ADMIN') {
+    }else if(userRole == 'ROLE_ADMIN') {
       toast.success("로그인에 성공했습니다!", {
         autoClose: 800,
         hideProgressBar: false,
