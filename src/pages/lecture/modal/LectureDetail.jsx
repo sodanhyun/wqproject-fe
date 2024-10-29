@@ -5,6 +5,7 @@ import {
   LECTURE_IMAGE_API,
 } from "../../../constants/api_constants.js";
 import useStore from "../../../store.js";
+import Modal from "react-modal";
 
 Modal.setAppElement('#root');
 
