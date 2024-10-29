@@ -33,6 +33,7 @@ pipeline {
                 dir('.') {
                     sh """
                     cp /var/jenkins_home/.env .env
+                    cat .env
                     """
                     sh """
                     cp /var/jenkins_home/vite.config.js vite.config.js
