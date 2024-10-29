@@ -441,19 +441,27 @@ function ScheduleModal({ selectedDay, setSelectedDay, handleDetailClick }) {
               <button onClick={() => {setOpen(false); setSelectedDay(null);}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
             </div>
               <div>
-                <Dialog.Title as="h3" className="text-center text-lg leading-6 font-medium text-gray-900">
+                <Dialog.Title as="h3" className="text-center text-lg mb-2 leading-6 font-semibold text-gray-900">
                   {`${selectedDay.date.split('-')[1]}월 ${selectedDay.date.split('-')[2]}일`}
                 </Dialog.Title>
                 <ul className="text-sm text-gray-500">
+                  <li className="flex mb-2 py-2 border-b-2">
+                    <span
+                    className="ml-2 flex-auto font-semibold text-gray-900">
+                      강의 제목
+                    </span>
+                    <span
+                    className="ml-2 mr-2 font-semibold text-gray-900 flex-none">
+                      시작 시간
+                    </span>
+                  </li>
                   {selectedDay.events.map((event) => (
                     <li key={event.id}>
                     <a onClick={() => {
                       setOpen(false);
                       setSelectedDay(null);
-                      handleDetailClick(event.id);
-                    }
-                    } 
-                      className="mt-2 group flex rounded-full cursor-pointer hover:bg-gray-100"
+                      handleDetailClick(event.id);}} 
+                      className="mt-2 border-b-2 group flex rounded-full cursor-pointer hover:bg-gray-100"
                     >
                       <p
                         className="truncate ml-2 flex-auto font-medium text-gray-900 group-hover:text-blue-600"

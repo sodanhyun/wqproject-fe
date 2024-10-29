@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
   const { setShowDetailForm } = useStore((state) => state);
-  const imgRef = useRef();
   const [reqData, setReqData] = useState({
     title: "",
     speaker: "",
@@ -26,6 +25,7 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
   const [loading, setLoading] = useState(true);
   const [pendding, setPendding] = useState(false);
   const [validErr, setValidErr] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const validateReq = () => {
     if (!reqData.title || !reqData.speaker || !reqData.sdate || !reqData.edate || !reqData.location || !reqData.limitMin) {
@@ -101,16 +101,45 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
     setReqData({ ...reqData, [name]: value});
   };
 
-  const saveImgFile = () => {
-    const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setImgFile(file);
-      setImgPreview(reader.result);
-      setNoImage(true);
-    };
+  const saveImgFile = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgFile(file);
+        setImgPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgFile(file);
+        setImgPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDivClick = () => {
+    document.getElementById('file-upload').click();
+  };
+
 
   const modifyLecture = () => {
     if(!validateReq()) return;
@@ -142,6 +171,34 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
         >
           <div className="px-4 py-4">
             <div className="grid max-w-2xl grid-cols-6 gap-y-2 gap-x-3 lg:gap-y-6">
+            <div className="col-span-full sm:col-span-full">
+              <label
+              className="block text-sm font-medium leading-6 text-gray-900"
+              >
+              대표 이미지
+              </label>
+              <div className="flex justify-center">
+                <div className={`border-2 border-dashed rounded-lg mt-2 p-4 w-64 flex justify-center ${
+                    dragging ? 'border-blue-500' : 'border-gray-300'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={handleDivClick}
+                  >
+                  {imgPreview ? <img src={imgPreview} alt="업로드 이미지" />
+                  : (imageSrc ? <img src={imageSrc} alt="기존 이미지" />
+                  : <p className="text-center text-gray-500">이미지를 드래그하거나 클릭하여 사진을 업로드하세요.</p>)}
+                  <input
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    id="file-upload"
+                    onChange={saveImgFile}
+                  />
+                </div>
+              </div>
+            </div>
               <div className="col-span-3">
                 <label
                   htmlFor="Topic"
@@ -279,27 +336,6 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
                     autoComplete="street-address"
                     className={`${(validErr && reqData.etc.length > 200) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6`}
                   ></textarea>
-                </div>
-              </div>
-
-              <div className="col-span-6">
-                <label
-                  htmlFor="lectureImg"
-                  className="cursor-pointer group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
-                >
-                  이미지 업로드
-                  <input
-                    style={{ display: "none" }}
-                    type="file"
-                    accept="image/*"
-                    id="lectureImg"
-                    onChange={saveImgFile}
-                    ref={imgRef}
-                  />
-                </label>
-                <div className="mt-2 w-full flex justify-center">
-                  {imgPreview ? imgPreview && <img src={imgPreview} alt="업로드 이미지" />
-                  : (imageSrc && <img src={imageSrc} alt="기존 이미지" />)}
                 </div>
               </div>
             </div>

@@ -13,7 +13,6 @@ registerLocale("ko", ko)
 
 const LectureReg = () => {
   const navigate = useNavigate();
-  const imgRef = useRef();
   const [reqData, setReqData] = useState({
     title: "",
     speaker: "",
@@ -27,6 +26,7 @@ const LectureReg = () => {
   const [imgFile, setImgFile] = useState("");
   const [pendding, setPendding] = useState(false);
   const [validErr, setValidErr] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const validateReq = () => {
     if (!reqData.title || !reqData.speaker || !reqData.sdate || !reqData.edate || !reqData.location || !reqData.limitMin) {
@@ -90,14 +90,16 @@ const LectureReg = () => {
     setReqData({ ...reqData, [name]: value});
   };
 
-  const saveImgFile = () => {
-    const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setImgFile(file);
-      setImgPreview(reader.result);
-    };
+  const saveImgFile = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgFile(file);
+        setImgPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const getFormattedDate = (date) => {
@@ -108,6 +110,33 @@ const LectureReg = () => {
     const minutes = ("0" + date.getMinutes()).slice(-2);
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgFile(file);
+        setImgPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDivClick = () => {
+    document.getElementById('file-upload').click();
+  };
 
   return (
     <>
@@ -135,6 +164,33 @@ const LectureReg = () => {
                 >
                   <div className="px-4 py-6 p-8 flex justify-center">
                     <div className="grid max-w-2xl gap-x-6 gap-y-8 grid-cols-6">
+                      <div className="col-span-full sm:col-span-full">
+                        <label
+                        className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                        대표 이미지
+                        </label>
+                        <div className="flex justify-center">
+                          <div className={`border-2 border-dashed rounded-lg mt-2 p-4 w-64 flex justify-center ${
+                              dragging ? 'border-blue-500' : 'border-gray-300'
+                            }`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            onClick={handleDivClick}
+                            >
+                            {imgPreview ? <img className="w-32" src={imgPreview} alt="강의 이미지" /> 
+                            : <p className="text-center text-gray-500">이미지를 드래그하거나 클릭하여 사진을 업로드하세요.</p>}
+                            <input
+                              className="hidden"
+                              type="file"
+                              accept="image/*"
+                              id="file-upload"
+                              onChange={saveImgFile}
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <div className="col-span-3">
                         <label
                           htmlFor="Topic"
@@ -179,36 +235,38 @@ const LectureReg = () => {
                         <span className="block text-sm font-medium leading-6 text-gray-900">
                         <span className=" text-red-500">*</span>강의시간
                         </span>
-                      </div>
-                      <div className="col-span-3">
-                        <DatePicker
-                        className={`${(validErr && (!reqData.sdate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm leading-6`}
-                          showTimeSelect
-                          dateFormat="yyyy/MM/dd a hh:mm"
-                          dateFormatCalendar="yyyy년 MM월"
-                          timeFormat="HH:mm"
-                          timeCaption="시작시간"
-                          placeholderText="시작일을 입력하십시오"
-                          selected={reqData.sdate}
-                          onChange={(sdate) => {setReqData({ ...reqData, ["sdate"]: sdate})}}
-                          locale="ko"
-                          timeIntervals={5}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <DatePicker
-                        className={`${(validErr && (!reqData.edate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm leading-6`}
-                          showTimeSelect
-                          dateFormat="yyyy/MM/dd a hh:mm"
-                          dateFormatCalendar="yyyy년 MM월"
-                          timeFormat="HH:mm"
-                          timeCaption="종료시각"
-                          placeholderText="종료일을 입력하십시오"
-                          selected={reqData.edate}
-                          onChange={(edate) => {setReqData({ ...reqData, ["edate"]: edate})}}
-                          locale="ko"
-                          timeIntervals={5}
-                        />
+                        <div className="grid grid-cols-6 mt-2 gap-2">
+                          <div className="col-span-3">
+                            <DatePicker
+                            className={`${(validErr && (!reqData.sdate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm leading-6`}
+                              showTimeSelect
+                              dateFormat="yyyy/MM/dd a hh:mm"
+                              dateFormatCalendar="yyyy년 MM월"
+                              timeFormat="HH:mm"
+                              timeCaption="시작시간"
+                              placeholderText="시작일을 입력하십시오"
+                              selected={reqData.sdate}
+                              onChange={(sdate) => {setReqData({ ...reqData, ["sdate"]: sdate})}}
+                              locale="ko"
+                              timeIntervals={5}
+                            />
+                          </div>
+                          <div className="col-span-3 flex justify-end">
+                            <DatePicker
+                            className={`${(validErr && (!reqData.edate || reqData.edate <= reqData.sdate)) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm leading-6`}
+                              showTimeSelect
+                              dateFormat="yyyy/MM/dd a hh:mm"
+                              dateFormatCalendar="yyyy년 MM월"
+                              timeFormat="HH:mm"
+                              timeCaption="종료시각"
+                              placeholderText="종료일을 입력하십시오"
+                              selected={reqData.edate}
+                              onChange={(edate) => {setReqData({ ...reqData, ["edate"]: edate})}}
+                              locale="ko"
+                              timeIntervals={5}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       <div className="col-span-full">
@@ -268,25 +326,6 @@ const LectureReg = () => {
                             autoComplete="street-address"
                             className={`${(validErr && reqData.etc.length>200) && "ring-red-500 ring-2 focus:ring-red-500 hover:ring-red-300"} hover:brightness-95 hover:ring-blue-300 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm leading-6`}
                           ></textarea>
-                        </div>
-                      </div>
-                      <div className="col-span-2 sm:col-span-3">
-                        <label
-                          htmlFor="lectureImg"
-                          className="cursor-pointer group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-slate-900 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900"
-                        >
-                          이미지 업로드
-                          <input
-                            style={{ display: "none" }}
-                            type="file"
-                            accept="image/*"
-                            id="lectureImg"
-                            onChange={saveImgFile}
-                            ref={imgRef}
-                          />
-                        </label>
-                        <div className="mt-2 w-full">
-                          {imgPreview && <img src={imgPreview} alt="강의 이미지" />}
                         </div>
                       </div>
                     </div>

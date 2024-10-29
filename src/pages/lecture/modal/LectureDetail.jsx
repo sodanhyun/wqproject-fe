@@ -5,6 +5,9 @@ import {
   LECTURE_IMAGE_API,
 } from "../../../constants/api_constants.js";
 import useStore from "../../../store.js";
+import Modal from "react-modal";
+
+Modal.setAppElement('#root');
 
 const LectureDetail = ({ lCode, onClose }) => {
   const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
@@ -12,6 +15,7 @@ const LectureDetail = ({ lCode, onClose }) => {
   const [lectureData, setLectureData] = useState({});
   const [imageSrc, setImageSrc] = useState("");
   const [loading, setLoading] = useState(true);
+  const [lightBoxOpen, setLightBoxOpen] = useState(false);
 
   useEffect(() => {
     const fetchLectureInfo = () => {
@@ -43,7 +47,7 @@ const LectureDetail = ({ lCode, onClose }) => {
   });
 
   return (
-    <div className="space-y-10 divide-y divide-gray-900/10">
+    <div className='space-y-10 divide-y divide-gray-900/10'>
       {loading ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
       <div className="grid grid-cols-1 gap-y-2 px-2 py-2">
           <div className="bg-postYellow shadow-sm ring-1 ring-gray-900/5 rounded-xl px-2 py-2">
@@ -63,7 +67,8 @@ const LectureDetail = ({ lCode, onClose }) => {
               </div>
 
               <div className="col-span-full flex justify-center">
-              {imageSrc && <img src={imageSrc} alt="Fetched from API" />}
+                {imageSrc && <img src={imageSrc} alt="Fetched from API" 
+                  onClick={() => {setLightBoxOpen(true);}} />}
               </div>
 
               <div className="col-span-full">
@@ -141,6 +146,19 @@ const LectureDetail = ({ lCode, onClose }) => {
           </button>
         </div>
       </div>}
+      <Modal
+        isOpen={lightBoxOpen}
+        onRequestClose={() => {setLightBoxOpen(false)}}
+        className="fixed inset-0 flex items-center justify-center"
+        overlayClassName="fixed inset-0 z-100"
+      >
+        <div className="w-fit h-fit relative">
+          <div className="absolute top-2 right-2">
+            <button onClick={() => {setLightBoxOpen(false)}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
+          </div>
+          <img src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`} alt="LightBox" className="max-w-full max-h-full" />
+        </div>
+      </Modal>
     </div>
   );
 };

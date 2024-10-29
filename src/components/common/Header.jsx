@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,20 +23,21 @@ const LinkData = [
 ];
 
 export function Header() {
-  const userRole = localStorage.getItem(USER_ROLE);
+  const [userRole, setUserRole]  = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userRole = localStorage.getItem(USER_ROLE);
-    if (userRole !== ADMIN) {
+    const role = localStorage.getItem(USER_ROLE);
+    if (role !== ADMIN) {
       navigate(LOGIN_COMPONENT);
     }
-  });
+    setUserRole(role);
+  }, []);
 
   return (
     <header className="py-10">
       <Container>
-        <nav className="relative z-100 flex justify-between">
+        <nav className="relative z-40 flex justify-between">
           <div className="flex items-center md:gap-x-12">
             <LogoLink href="/" aria-label="Home">
               <img src={NEWLOGO} className="w-40"></img>
