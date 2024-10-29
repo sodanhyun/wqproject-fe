@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import fetcher from "../../fetcher.js";
 import { REGISTER_LECTURE_API } from "../../constants/api_constants.js";
 import { LECTURE_LIST_COMPONENT } from "../../constants/component_constants.js";
