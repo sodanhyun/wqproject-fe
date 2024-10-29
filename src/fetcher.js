@@ -19,8 +19,6 @@ fetcher.interceptors.response.use(
     if (error.response?.status === 401 || error.response.status === 403) {
       localStorage.clear();
       window.location.href = VITE_REACT_APP_FAIL_REDIRECT_URL;
-      const response = await axios.request(error.config);
-      return response;
     }
     return Promise.reject(error);
   }
