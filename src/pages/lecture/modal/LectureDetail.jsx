@@ -8,10 +8,10 @@ import useStore from "../../../store.js";
 import Modal from "react-modal";
 
 Modal.setAppElement('#root');
+const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
 
 const LectureDetail = ({ lCode, onClose }) => {
-  const { VITE_REACT_APP_API_BASE_URL } = import.meta.env;
-  const { setShowDetailForm } = useStore((state) => state);
+  const {setShowDetailForm } = useStore((state) => state);
   const [lectureData, setLectureData] = useState({});
   const [imageSrc, setImageSrc] = useState("");
   const [loading, setLoading] = useState(true);
@@ -146,20 +146,45 @@ const LectureDetail = ({ lCode, onClose }) => {
           </button>
         </div>
       </div>}
-      <Modal
-        isOpen={lightBoxOpen}
-        onRequestClose={() => {setLightBoxOpen(false)}}
-        className="fixed inset-0 flex items-center justify-center"
-        overlayClassName="fixed inset-0 z-100"
-      >
-        <div className="w-fit h-fit relative">
-          <div className="absolute top-2 right-2">
-            <button onClick={() => {setLightBoxOpen(false)}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
-          </div>
-          <img src={`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`} alt="LightBox" className="max-w-full max-h-full" />
-        </div>
-      </Modal>
+      <ImageModal
+        lCode={lCode}
+        lightBoxOpen={lightBoxOpen}
+        setLightBoxOpen={setLightBoxOpen}
+      />
     </div>
   );
 };
+
+const ImageModal = ({lCode, lightBoxOpen, setLightBoxOpen}) => {
+  const [originImgSrc, setOriginImageSrc] = useState("");
+
+  useEffect(() => {
+    fetcher.get(`${VITE_REACT_APP_API_BASE_URL}${LECTURE_IMAGE_API}/${lCode}`, {
+      responseType: 'blob'
+    })
+    .then((img) => {
+      const originImgUrl = URL.createObjectURL(img.data);
+      setOriginImageSrc(originImgUrl);
+    }).catch((err) => {
+      setOriginImageSrc("");
+    })
+  }, []);
+  
+  return(
+  <Modal
+    isOpen={lightBoxOpen}
+    onRequestClose={() => {setLightBoxOpen(false); setImgOriginLoading(true);}}
+    className="fixed inset-0 flex items-center justify-center"
+    overlayClassName="fixed inset-0 z-100"
+  >
+    {!originImgSrc ? <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div> : 
+    <div className="w-fit h-fit relative">
+      <div className="absolute top-2 right-2">
+        <button onClick={() => {setLightBoxOpen(false); setImgOriginLoading(true);}} className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 font-bold hover:bg-slate-400 focus:outline-none">&times;</button>
+      </div>
+      <img src={originImgSrc} alt="LightBox" className="max-w-full max-h-full" />
+    </div>}
+  </Modal>)
+}
+
 export default LectureDetail;
