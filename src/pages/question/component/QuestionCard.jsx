@@ -68,7 +68,7 @@ const QuestionCard = ({ data, role, clickLike, clickPick, questionDelete }) => {
                 className={`w-6 cursor-pointer mr-1
                           ${myLike ? "text-red-500" : "text-gray-300"}`}
               />
-              <p>{data.likesCount}</p>
+              <p>{data.likesCnt}</p>
             </div>
           </figcaption>
           <p className="text-lg tracking-tight text-slate-900">

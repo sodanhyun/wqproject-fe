@@ -2,6 +2,7 @@ import {HeartIcon} from "@heroicons/react/20/solid/index.js";
 import {useState} from "react";
 import UpdateQuestionModal from "../modal/UpdateQuestionModal.jsx";
 import MyQuestionDeleteModal from "../modal/MyQuestionDeleteModal.jsx";
+import { ADMIN } from "../../../constants/user_role.js";
 
 const MyQuestionCard = ({data, role, questionUpdate, questionDelete}) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -14,7 +15,7 @@ const MyQuestionCard = ({data, role, questionUpdate, questionDelete}) => {
           <figcaption className="relative  flex items-center justify-between border-slate-100">
             <div className="flex">
               <div className="font-display text-base text-slate-900 mr-2">
-                {role==="ADMIN" ? data.name : "익명 사용자"}
+                {role===ADMIN ? data.userName : "익명 사용자"}
               </div>
               <div className="mt-1 text-sm text-slate-500">
                 {data.updateTime === data.regTime ? data.regTime?.split("T")[1] : data.updateTime?.split("T")[1]}
@@ -22,7 +23,7 @@ const MyQuestionCard = ({data, role, questionUpdate, questionDelete}) => {
             </div>
             <div className="flex justify-between items-center">
               <HeartIcon className="w-6 mr-1 text-red-300" />
-              <p>{data.likesCount}</p>
+              <p>{data.likesCnt}</p>
             </div>
           </figcaption>
           <p className="text-lg tracking-tight text-slate-900">

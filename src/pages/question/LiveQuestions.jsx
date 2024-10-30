@@ -1,6 +1,6 @@
 import { Container } from "../../components/common/Container.jsx";
 import { Button } from "../../components/common/Button.jsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Toggle from "./component/Toggle.jsx";
 import Sort from "./component/Sort.jsx";
 import CreateQuestionModal from "./modal/CreateQuestionModal.jsx";
@@ -41,72 +41,43 @@ const LiveQuestions = () => {
   const myId = localStorage.getItem(USER_ID);
   const [active, setActive] = useState(false);
   const [limitMin, setLimitMin] = useState(null); // 제한시간
-  
-  useEffect(() => {
-    fetchQuestionList();
-    fetchLectureInfo();
-    fetchActive();
-    connect();
-    return () => disconnect();
-  }, []);
-
-  useEffect(() => {
-    sortQuestionList();
-  }, [sortSelect]);
-
-  // 선택한 강의정보 불러와서 제목 지정
-  const fetchLectureInfo = () => {
-    fetcher.get(`${QUESTION_LIMIT_API}/${lCode}`).then((res) => {
-      setLectureTitle(res.data.title);
-      setLimitMin(res.data.limitMin);
-    });
-  };
-
-  const fetchActive = () => {
-    fetcher.get(`${QUESTION_ACTIVE_API}/${lCode}`).then((res) => {
-      setActive(res.data); // 강의의 active 상태를 설정
-    });
-  };
-
-
-
-  // 처음 렌더링 할 떄 질문리스트 받아오기
-  const fetchQuestionList = () => {
-    fetcher.get(`${QUESTION_LIST_API}/${lCode}`).then((res) =>
-      setQuestionsList(
-        res.data.sort((a, b) => {
-          const aNumber = parseInt(a.qcode.split("Q")[1]);
-          const bNumber = parseInt(b.qcode.split("Q")[1]);
-          return bNumber - aNumber;
-        })
-      )
-    );
-  };
-  // 질문리스트 정렬
-  const sortQuestionList = () => {
-    const newArray = [...questionsList];
-    const sortedArray =
-      sortSelect === "시간순"
-        ? newArray.sort((a, b) => {
-            const aNumber = parseInt(a.qcode.split("Q")[1]);
-            const bNumber = parseInt(b.qcode.split("Q")[1]);
-            return bNumber - aNumber;
-          }) // 시간순 정렬
-        : newArray.sort((a, b) => {
-            if (b.likesCount === a.likesCount) {
-              const aNumber = parseInt(a.qcode.split("Q")[1]);
-              const bNumber = parseInt(b.qcode.split("Q")[1]);
-              return bNumber - aNumber;
-            }
-            return b.likesCount - a.likesCount;
-          }); // 공감순 정렬
-    setQuestionsList(sortedArray);
-  };
-
   // ---------질문 등록 마지막 시간 로컬스토리지 저장 후 5분 타이머---------- //
   const [lastQuestionTime, setLastQuestionTime] = useState(null); // 마지막으로 질문을 등록한 시간을 저장
   const [buttonDisabled, setButtonDisabled] = useState(true); // 새로운 질문하기 버튼 활성/비활성 상태를 저장
   const [buttonText, setButtonText] = useState("새로운 질문하기"); // 새로운 질문하기 버튼에 표시될 텍스트 저장
+  
+  useEffect(() => {
+    // 선택한 강의정보 불러와서 제목 지정
+    const fetchLectureInfo = () => {
+      fetcher.get(`${QUESTION_LIMIT_API}/${lCode}`).then((res) => {
+        setLectureTitle(res.data.title);
+        setLimitMin(res.data.limitMin);
+      });
+    };
+    // 강의의 active 상태를 설정
+    const fetchActive = () => {
+      fetcher.get(`${QUESTION_ACTIVE_API}/${lCode}`).then((res) => {
+        setActive(res.data); 
+      });
+    };
+    // 처음 렌더링 할 떄 질문리스트 받아오기
+    const fetchQuestionList = () => {
+      fetcher.get(`${QUESTION_LIST_API}/${lCode}`).then((res) =>
+        setQuestionsList(res.data)
+      );
+    };
+    fetchLectureInfo();
+    fetchActive();
+    fetchQuestionList();
+    connect();
+    return () => disconnect();
+  }, []);
+
+    // 페이지 새로고침 후 마지막 질문 시간 복구 기능
+  useEffect(() => {
+    const savedLastQuestionTime = new Date(localStorage.getItem("lastQuestionTime"));
+    if (savedLastQuestionTime) setLastQuestionTime(savedLastQuestionTime);
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -129,7 +100,31 @@ const LiveQuestions = () => {
     }
     return () => clearInterval(timer);
   }, [lastQuestionTime]);
-  //----------------------------------------------------------//
+
+  useEffect(() => {
+    // 질문리스트 정렬
+    sortQuestionList();
+  }, [sortSelect]);
+
+  const sortQuestionList = useCallback(() => {
+    const newArray = [...questionsList];
+    const sortedArray =
+      sortSelect === "시간순"
+        ? newArray.sort((a, b) => {
+            const aNumber = parseInt(a.qcode.split("Q")[1]);
+            const bNumber = parseInt(b.qcode.split("Q")[1]);
+            return bNumber - aNumber;
+          }) // 시간순 정렬
+        : newArray.sort((a, b) => {
+            if (b.likesCount === a.likesCount) {
+              const aNumber = parseInt(a.qcode.split("Q")[1]);
+              const bNumber = parseInt(b.qcode.split("Q")[1]);
+              return bNumber - aNumber;
+            }
+            return b.likesCount - a.likesCount;
+          }); // 공감순 정렬
+    setQuestionsList(sortedArray);
+  });
 
   // 웹소켓 연결
   const connect = () => {
@@ -149,6 +144,7 @@ const LiveQuestions = () => {
   const disconnect = () => {
     client.current.deactivate().then(() => console.log("연결 끊김 ㅠ.ㅠ"));
   };
+
   // --------------------- 구독 하기 --------------------- //
   const subscribe = () => {
     const handleSubscribe = (api, callback) => {
@@ -256,15 +252,6 @@ const LiveQuestions = () => {
   const clickPick = (code) => {
     handlePublish(PICK_PUBLISH, { qCode: code });
   };
-  // 페이지 새로고침 후 마지막 질문 시간 복구 기능
-  useEffect(() => {
-    const savedLastQuestionTime = new Date(
-      localStorage.getItem("lastQuestionTime")
-    );
-    if (savedLastQuestionTime) {
-      setLastQuestionTime(savedLastQuestionTime);
-    }
-  }, []);
 
   return (
     <section
@@ -307,12 +294,10 @@ const LiveQuestions = () => {
           className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-6 sm:gap-8 lg:mt-20 lg:max-w-none lg:grid-cols-3"
         >
           {toggle ? (
-            questionsList.filter((data) => data.memberId === myId).length >
-            0 ? (
-              questionsList
-                .filter((data) => data.memberId === myId)
+            questionsList.filter((data) => data.userId === myId).length > 0 ? (
+              questionsList.filter((data) => data.userId === myId)
                 .map((data) =>
-                  data.pick ? (
+                  data.isPicked ? (
                     <PickedCard
                       key={data.qcode}
                       data={data}
@@ -328,10 +313,9 @@ const LiveQuestions = () => {
                       questionUpdate={questionUpdate}
                       questionDelete={questionDelete}
                     />
-                  )
-                )
+                  ))
             ) : (
-              <div className="grid-cols-4">
+              <div className="col-span-full flex justify-center">
                 <p className="text-2xl text-center grid max-w-2xl grid-cols-1 gap-6 text-slate-400">
                   등록된 질문이 없어요!<br></br> 질문을 등록하세요
                 </p>
@@ -339,7 +323,7 @@ const LiveQuestions = () => {
             )
           ) : questionsList.length > 0 ? (
             questionsList.map((data) =>
-              data.pick ? (
+              data.isPicked ? (
                 <PickedCard
                   key={data.qcode}
                   data={data}
@@ -347,7 +331,7 @@ const LiveQuestions = () => {
                   clickLike={clickLike}
                   clickPick={clickPick}
                 />
-              ) : data.memberId === myId ? (
+              ) : data.userId === myId ? (
                 <MyQuestionCard
                   key={data.qcode}
                   data={data}
@@ -367,9 +351,11 @@ const LiveQuestions = () => {
               )
             )
           ) : (
-            <p className="text-2xl text-center grid max-w-2xl grid-cols-1 gap-6 text-slate-400">
-              등록된 질문이 없어요! <br></br>질문을 등록하세요
-            </p>
+            <div className="col-span-full flex justify-center">
+              <p className="text-2xl text-center grid max-w-2xl grid-cols-1 gap-6 text-slate-400">
+                등록된 질문이 없어요! <br></br>질문을 등록하세요
+              </p>
+            </div>
           )}
         </ul>
       </Container>

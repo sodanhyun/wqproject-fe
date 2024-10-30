@@ -71,7 +71,6 @@ const LectureReg = () => {
     let data = {...reqData};
     data = { ...data, ["sdate"]: getFormattedDate(reqData.sdate)};
     data = { ...data, ["edate"]: getFormattedDate(reqData.edate)};
-    console.log(data)
     const formData = new FormData();
     formData.append("data", new Blob([JSON.stringify(data)], {type: "application/json"}));
     formData.append("image", imgFile);

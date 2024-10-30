@@ -2,11 +2,13 @@ import {HeartIcon} from "@heroicons/react/20/solid/index.js";
 import {useState} from "react";
 import pinImg from "/assets/pin.png";
 import CancelPickModal from "../modal/CancelPickModal.jsx";
+import { ADMIN } from "../../../constants/user_role.js";
+import { USER_ROLE } from "../../../constants/localstorage_constants.js";
 
 const PickedCard = ({data, role, clickLike, clickPick}) => {
   const [myLike, setMyLike] = useState(data.myLike);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
-  const isAdmin = localStorage.getItem("user_role") === "ADMIN";
+  const isAdmin = localStorage.getItem(USER_ROLE) === ADMIN;
 
   const handleClickLike = () => {
     setMyLike(!myLike);
@@ -20,7 +22,7 @@ const PickedCard = ({data, role, clickLike, clickPick}) => {
           <figcaption className="relative  flex items-center justify-between border-slate-100">
             <div className="flex">
               <div className="font-display text-base text-slate-900 mr-2">
-                {role=="ADMIN" ? data.name : "익명 사용자"}
+                {role==ADMIN ? data.userName : "익명 사용자"}
               </div>
               <div className="mt-1 text-sm text-slate-500">
                 {data.updateTime ? data.updateTime.split("T")[1] : data.regTime.split("T")[1]}
@@ -46,7 +48,7 @@ const PickedCard = ({data, role, clickLike, clickPick}) => {
                           ${myLike ? "text-red-500" : "text-gray-300"}`
                 }
               />
-              <p>{data.likesCount}</p>
+              <p>{data.likesCnt}</p>
             </div>
           </figcaption>
           <p className="text-lg tracking-tight text-slate-900">
