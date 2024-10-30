@@ -6,3 +6,4 @@ export const USER_TYPE = 'user_type';
 export const TYPE_OWN = 'own';
 export const TYPE_KAKAO = 'kakao';
 export const TYPE_GOOGLE = 'google';
+export const LECTURE_CODE = 'lCode';
