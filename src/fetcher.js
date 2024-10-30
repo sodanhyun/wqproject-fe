@@ -17,7 +17,6 @@ fetcher.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401 || error.response.status === 403) {
-      localStorage.clear();
       window.location.href = VITE_REACT_APP_FAIL_REDIRECT_URL;
     }
     return Promise.reject(error);

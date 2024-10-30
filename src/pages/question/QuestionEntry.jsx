@@ -6,8 +6,8 @@ import SocialLoginLink from '../auth/component/SocialLoginLink';
 
 export default function QuestionEntry() {
   const { lCode } = useParams();
-  localStorage.clear();
-  localStorage.setItem("lCode", lCode);
+  localStorage.removeItem(LECTURE_CODE);
+  localStorage.setItem(LECTURE_CODE, lCode);
 
   return (
     <div className="h-screen">

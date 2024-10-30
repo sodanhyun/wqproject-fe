@@ -67,8 +67,9 @@ const LectureDetail = ({ lCode, onClose }) => {
               </div>
 
               <div className="col-span-full flex justify-center">
-                {imageSrc && <img src={imageSrc} alt="Fetched from API" 
-                  onClick={() => {setLightBoxOpen(true);}} />}
+                {imageSrc ? <img src={imageSrc} alt="Fetched from API" 
+                  onClick={() => {setLightBoxOpen(true);}} />
+                : <div className="spinner w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mt-4 mx-auto"></div>}
               </div>
 
               <div className="col-span-full">

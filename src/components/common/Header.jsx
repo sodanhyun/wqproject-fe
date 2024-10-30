@@ -38,7 +38,7 @@ export function Header() {
     <header className="py-10">
       <Container>
         <nav className="relative z-40 flex justify-between">
-          <div className="flex items-center md:gap-x-12">
+          <div className="flex items-center gap-x-12">
             <LogoLink href="/" aria-label="Home">
               <img src={NEWLOGO} className="w-40"></img>
             </LogoLink>

@@ -127,7 +127,7 @@ const LectureList = () => {
         </header>
         <main>
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="sticky top-0 z-40 flex h-15 shrink-0 items-center gap-x-6 border-b border-white/5 shadow-sm">
+            <div className="sticky top-0 z-30 flex h-15 shrink-0 items-center gap-x-6 border-b border-white/5 shadow-sm">
               <div className="flex flex-1 py-2 gap-x-4 self-stretch lg:gap-x-6">
                 <div className="flex flex-1">
                   <div className="relative w-full">
