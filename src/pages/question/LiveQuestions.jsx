@@ -21,13 +21,12 @@ import {
   UPDATE_QUESTION_SUBSCRIBE,
   QUESTION_ACTIVE_API,
   QUESTION_LIMIT_API,
-  LOGOUT_API,
 } from "../../constants/api_constants.js";
 import MyQuestionCard from "./component/MyQuestionCard.jsx";
 import PickedCard from "./component/PickedCard.jsx";
 import QuestionCard from "./component/QuestionCard.jsx";
 import {toast} from "react-toastify";
-import { ACCESS_TOKEN, USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
+import { USER_ID, USER_ROLE } from "../../constants/localstorage_constants.js";
 import LogoutLink from "../auth/component/LogoutLink.jsx";
 
 const { VITE_REACT_APP_API_WS_URL } = import.meta.env;
@@ -136,7 +135,6 @@ const LiveQuestions = () => {
   const connect = () => {
     client.current = new StompJS.Client({
       brokerURL: `${VITE_REACT_APP_API_WS_URL}`,
-      withCredentials: true,
       onWebSocketError: (frame) => {
         console.log(frame);
       },
