@@ -2,12 +2,14 @@ import { HeartIcon } from "@heroicons/react/20/solid/index.js";
 import { useState } from "react";
 import CheckPickModal from "../modal/CheckPickModal.jsx";
 import MyQuestionDeleteModal from "../modal/MyQuestionDeleteModal.jsx";
+import { USER_ROLE } from "../../../constants/localstorage_constants.js";
+import { ADMIN } from "../../../constants/user_role.js";
 
 const QuestionCard = ({ data, role, clickLike, clickPick, questionDelete }) => {
   const [myLike, setMyLike] = useState(data.myLike);
   const [pickModalOpen, setPickModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const isAdmin = localStorage.getItem("user_role") === "ADMIN";
+  const isAdmin = localStorage.getItem(USER_ROLE) === ADMIN;
 
   const handleClickLike = () => {
     setMyLike(!myLike);
