@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { USER_ROLE } from "../../../constants/localstorage_constants";
+import { LECTURE_CODE, USER_ROLE } from "../../../constants/localstorage_constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LOGIN_COMPONENT, MAIN_COMPONENT } from "../../../constants/component_constants";
