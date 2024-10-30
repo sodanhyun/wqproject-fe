@@ -74,9 +74,10 @@ const LectureModifyForm = ({lCode, fetchLectureData, onClose}) => {
           setImageSrc(imgUrl);
         }).catch((err) => {
           setImageSrc("");
+        }).finally(() => {
+          setLoading(false);
         })
         setReqData(res.data);
-        setLoading(false);
       });
     };
     fetchLectureInfo();
