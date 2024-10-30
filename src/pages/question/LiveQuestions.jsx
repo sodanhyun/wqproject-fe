@@ -39,7 +39,6 @@ const LiveQuestions = () => {
   const [toggle, setToggle] = useState(false); // 내 질문 보기 토글
   const { lCode } = useParams(); // 강의 식별자 URL 파라미터로 받아오기
   const client = useRef({});
-  const localStorageToken = window.localStorage.getItem(ACCESS_TOKEN);
   const myId = localStorage.getItem(USER_ID);
   const [active, setActive] = useState(false);
   const [limitMin, setLimitMin] = useState(null); // 제한시간
@@ -137,9 +136,7 @@ const LiveQuestions = () => {
   const connect = () => {
     client.current = new StompJS.Client({
       brokerURL: `${VITE_REACT_APP_API_WS_URL}`,
-      connectHeaders: {
-        Authorization: "Bearer " + localStorageToken,
-      },
+      withCredentials: true,
       onWebSocketError: (frame) => {
         console.log(frame);
       },
