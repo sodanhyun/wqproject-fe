@@ -9,9 +9,10 @@ const LoginHandeler = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const lCode = localStorage.getItem('lCode');
+    const lCode = localStorage.getItem(LECTURE_CODE);
     const searchParams = new URL(window.location.href).searchParams;
-    const userRole = searchParams.get("authority");
+    const userRole = searchParams.get(USER_ROLE);
+    console.log(userRole);
     localStorage.setItem(USER_ROLE, userRole);
     if(lCode) {
       toast.success("로그인에 성공했습니다!", {
@@ -22,7 +23,7 @@ const LoginHandeler = () => {
         draggable: true,
       });
       navigate(`/liveQuestions/${lCode}`);
-    }else if(userRole == ADMIN) {
+    }else if(userRole === ADMIN) {
       toast.success("로그인에 성공했습니다!", {
         autoClose: 800,
         hideProgressBar: false,
