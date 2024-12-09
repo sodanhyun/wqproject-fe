@@ -192,7 +192,7 @@ const LectureQR = () => {
                             <div>
                               <div className="flex justify-center">
                                 <QrCode
-                                  value={`${VITE_REACT_APP_API_FRONT_URL}/social/${lCode}`}
+                                  value={`${VITE_REACT_APP_API_FRONT_URL}/liveQuestions/${lCode}`}
                                   size={qrSize}
                                 />
                               </div>
