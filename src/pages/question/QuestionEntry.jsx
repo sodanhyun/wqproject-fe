@@ -3,6 +3,7 @@ import { Link} from "react-router-dom";
 import { SlimLayout } from "../../components/common/SlimLayout";
 import WqLogo from "/assets/logo/wq2.png"
 import SocialLoginLink from '../auth/component/SocialLoginLink';
+import { LECTURE_CODE } from '../../constants/localstorage_constants';
 
 export default function QuestionEntry() {
   const { lCode } = useParams();
