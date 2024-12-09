@@ -16,6 +16,7 @@ export default function LogoutLink({ children }) {
     const logoutHandler = async (event) => {
         event.preventDefault();
         const type = localStorage.getItem(USER_TYPE);
+        alert(type)
         if(type === TYPE_OWN) {
             await fetcher.delete(VITE_REACT_APP_API_BASE_URL + LOGOUT_API).then((res) => {
                 localStorage.clear();
