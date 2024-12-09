@@ -18,16 +18,6 @@ export default function QuestionEntry() {
           </Link>
         </div>
         <h2 className="mt-20 text-lg font-semibold text-gray-900 flex justify-center">로그인</h2>
-        <p className="mt-2 text-sm text-gray-700 flex justify-center ">
-          로그인 없이
-          <Link
-            to={`/question/${lCode}`}
-            className="font-medium text-blue-600 hover:underline"
-          >
-            질문등록
-          </Link>
-          하러가기
-        </p>
         <SocialLoginLink/>
       </SlimLayout>
     </div>
