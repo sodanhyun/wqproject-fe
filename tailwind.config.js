@@ -1,5 +1,5 @@
-import {formsPlugin} import '@tailwindcss/forms'
-import {headlessuiPlugin} import '@headlessui/tailwindcss'
+const formsPlugin = require('@tailwindcss/forms')
+const headlessuiPlugin = require('@headlessui/tailwindcss')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -44,5 +44,5 @@ module.exports = {
       
     },
   },
-  plugins: [formsPlugin, headlessuiPlugin],
+  plugins: [formsPlugin, headlessuiPlugin,require('@tailwindcss/forms')],
 }
